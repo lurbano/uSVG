@@ -1,7 +1,12 @@
 class uSvg{
-  constructor(id, {width="300", height="300"} = {}){
+  constructor(id, {width="300", height="300",
+                   scale = 1,
+                   zero = new uPoint(0,0),
+                   drawAxes = {w : width, h : height,
+                               dxTic: 10, dyTic: 10}
+                  } = {}){
     //console.log(document.currentScript);
-    this.id = "id"+"_svg";
+    this.id = id+"_svg";
     this.width = parseInt(width);
     this.height = parseInt(height);
     this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -16,7 +21,16 @@ class uSvg{
 
     this.vectors = [];
 
-    //document.getElementById(id).appendChild(this.svg);
+    //set scale
+    this.scale = scale;
+
+    //set xy zero
+    this.setZero(zero);
+
+    //draw axes
+    this.axisLines = [];
+    this.axisTics = [];
+    if (drawAxes) this.drawAxes({w: drawAxes.w, h: drawAxes.h});
 
     //add definition area
     this.defs = document.createElementNS("http://www.w3.org/2000/svg","defs");
@@ -51,6 +65,7 @@ class uSvg{
     line.setAttribute("stroke-width", stroke_width);
 
     this.svg.appendChild(line);
+    return line;
   }
 
   addArrow(p1, p2, {stroke="#000", stroke_width="4"} = {}){
@@ -71,7 +86,7 @@ class uSvg{
   }
 
   setZero(p){
-    this.zero = p;
+    this.zero = new uPoint(p.x*this.scale, p.y*this.scale);
   }
 
   flip(p){
@@ -80,13 +95,20 @@ class uSvg{
   }
 
   transform(p){
+    //scale
+    p.y *= this.scale;
+    p.x *= this.scale;
     //console.log(this.height, p.y, this.zero.y);
-    let y = this.height - p.y - this.zero.y;
-    let x = p.x + this.zero.x;
-    return new uPoint(x,y);
+    p.y = this.height - p.y - this.zero.y;
+    p.x = p.x + this.zero.x;
+
+    return p;
   }
 
-  drawAxes({w="100", h="100"} = {}){
+  drawAxes({w="100", h="100",
+            dxTic= 10, dyTic= 10} = {}){
+
+    this.removeAxes();
 
     let axisStyle = {'stroke': '#900',
                  'stroke_width': "1"};
@@ -95,19 +117,25 @@ class uSvg{
     let p1 = new uPoint(-w,0);
     let p2 = new uPoint(w,0);
 
-    this.addLine(p1, p2, axisStyle);
+    this.axisLines.push(this.addLine(p1, p2, axisStyle));
 
     p1 = new uPoint(0, -h);
     p2 = new uPoint(0, h);
-    this.addLine(p1, p2, axisStyle);
+    this.axisLines.push(this.addLine(p1, p2, axisStyle));
 
     //tic marks
-    for (let x=-w; x<=w; x+=10){
-      this.addLine(new uPoint(x, 5), new uPoint(x,-5), ticStyle);
+    for (let x=-w; x<=w; x+=dxTic){
+      this.axisTics.push(this.addLine(new uPoint(x, 5), new uPoint(x,-5), ticStyle));
     }
-    for (let y=-h; y<=h; y+=10){
-      this.addLine(new uPoint(5,y), new uPoint(-5,y), ticStyle);
+    for (let y=-h; y<=h; y+=dyTic){
+      this.axisTics.push(this.addLine(new uPoint(5,y), new uPoint(-5,y), ticStyle));
     }
+  }
+  removeAxes(){
+    this.axisLines.forEach(item => item.remove());
+    this.axisLines = [];
+    this.axisTics.forEach(item => item.remove());
+    this.axisTics = [];
   }
 
   addVector({pos=new uPoint(0,0), vx=undefined, vy=undefined, magnitude=undefined, angle=undefined} = {}){

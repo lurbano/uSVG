@@ -18,12 +18,15 @@
 
 
         <script type="text/javascript" id="v0">
-          svg = new uSvg("vec0");
-          svg.setZero(new uPoint(100,100));
-          svg.drawAxes({w:"200", h:"150"});
+          svg = new uSvg("vec0", {
+                          zero: new uPoint(100,100),
+                          scale: 0.5,
+                          drawAxes: {dxTic:20}
+                         }
+                        );
+          //svg.setZero(new uPoint(100,100));
+          //svg.drawAxes({w:"200", h:"150"});
           svg.addArrow(new uPoint(0, 0), new uPoint(100,-50));
-          //v1 = new vector({'pos': new uPoint(10,-10),
-          //                 'vx': -50, 'vy': 50});
           svg.addVector({'pos': new uPoint(10,-10),
                            'vx': -50, 'vy': 50});
 
@@ -32,8 +35,9 @@
 
 
         <script type="text/javascript" id="v0">
-          svg = new uSvg("vec0");
+          svg = new uSvg("vec1");
           svg.setZero(new uPoint(100,100));
+          svg.removeAxes();
           svg.drawAxes({w:"200", h:"150"});
           svg.addLine(new uPoint(0, 50), new uPoint(200,50));
           svg.addArrow(new uPoint(0, 0), new uPoint(100,50));
