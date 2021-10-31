@@ -28,9 +28,13 @@ class uSvg{
     this.setZero(zero);
 
     //draw axes
+    this.axisDefaults = {w : width, h : height,
+                dxTic: 10, dyTic: 10};
+    //  merge axis properties
+    drawAxes = {...this.axisDefaults, ...drawAxes};
     this.axisLines = [];
     this.axisTics = [];
-    if (drawAxes) this.drawAxes({w: drawAxes.w, h: drawAxes.h});
+    if (drawAxes) this.drawAxes(drawAxes);
 
     //add definition area
     this.defs = document.createElementNS("http://www.w3.org/2000/svg","defs");
@@ -178,8 +182,6 @@ class vector{
       this.vx = magnitude * Math.cos(Math.radians(angle));
       this.vy = magnitude * Math.sin(Math.radians(angle));
     }
-    this.endpt = new uPoint(this.pos.x+this.vx, this.pos.y+this.vy)
-    console.log('vx,vy', this.vx, this.vy);
-    console.log("endpt", this.endpt);
+    this.endpt = new uPoint(this.pos.x+this.vx, this.pos.y+this.vy);
   }
 }
