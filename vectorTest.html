@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>SVG Test</title>
+
+    <script type="text/javascript" src="./uSvg.js"></script>
+
+    <style media="screen">
+      svg {
+        border: 1px solid black;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Vector SVG Test</h1>
+
+    vx: <input type="number" id="vx" value="100">
+    <br>
+    vy: <input type="number" id="vy" value="50">
+    <button type="button" id="addVector">Add Vector</button>
+    <button type="button" name="subtractVector">Subtract Vector</button>
+    <br>
+
+        <script type="text/javascript" id="v0">
+          svg = new uSvg("vec0", {
+                          zero: new uPoint(100,100),
+                          scale: 0.5,
+                          drawAxes: {dxTic:20}
+                         }
+                        );
+          console.log("new", new uPoint(10,-10))
+          svg.addVector( {base: new uPoint(10,-10),
+                           'vx': -50, 'vy': 50});
+
+          addButton = document.getElementById("addVector");
+          subButton = document.getElementById("subtractVector");
+
+          addButton.addEventListener('click', function(){
+            let vx = document.getElementById("vx").value;
+            let vy = document.getElementById("vy").value;
+            svg.addVector({vx:parseFloat(vx), vy:parseFloat(vy)});
+
+          })
+        </script>
+
+
+
+
+
+
+  </body>
+
+</html>

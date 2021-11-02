@@ -142,12 +142,38 @@ class uSvg{
     this.axisTics = [];
   }
 
-  addVector({pos=new uPoint(0,0), vx=undefined, vy=undefined, magnitude=undefined, angle=undefined} = {}){
+  drawVector({pos=new uPoint(0,0), vx=undefined, vy=undefined, magnitude=undefined, angle=undefined} = {}){
     var v = new vector({'pos': pos,
                         'vx': vx, 'vy': vy,
                         'magnitude': magnitude,
                         'angle': angle})
     v.arrow = this.addArrow(v.pos, v.endpt);
+    this.vectors.push(v);
+  }
+
+  addVector({base=undefined, vx=undefined, vy=undefined, magnitude=undefined, angle=undefined} = {}){
+
+    let pos = 0;
+    console.log('aV', base);
+    if (base) {
+      console.log("create")
+      pos = base;
+    }
+    else if (this.vectors.length > 0) {
+      console.log("if", this.vectors[this.vectors.length-1].endpt)
+      pos = this.vectors[this.vectors.length-1].endpt;
+    }
+    else {
+      pos = new uPoint(0,0);
+    }
+    console.log('addVector', this.vectors.length, pos, vx, vy);
+    var v = new vector({'pos': pos,
+                        'vx': vx, 'vy': vy,
+                        'magnitude': magnitude,
+                        'angle': angle})
+    console.log("vec a", v);
+    v.arrow = this.addArrow(v.pos, v.endpt);
+    console.log("vec b", v);
     this.vectors.push(v);
   }
 }
@@ -163,8 +189,8 @@ class uSvg{
 
 class uPoint{
   constructor(x, y) {
-    this.x = x;
-    this.y = y;
+    this.x = parseFloat(x);
+    this.y = parseFloat(y);
   }
   flip(ymax){
     this.y = ymax - this.y;
@@ -174,7 +200,9 @@ class uPoint{
 
 class vector{
   constructor({pos=new uPoint(0,0), vx=undefined, vy=undefined, magnitude=undefined, angle=undefined} = {}){
+
     this.pos = pos;
+    console.log("c vec", this.pos, this.pos.x, this.pos.y);
     if (vx && vy){
       this.vx = vx; this.vy = vy;
     }
@@ -182,6 +210,10 @@ class vector{
       this.vx = magnitude * Math.cos(Math.radians(angle));
       this.vy = magnitude * Math.sin(Math.radians(angle));
     }
+    console.log('addition', this.pos.x, this.vx, this.pos.x+this.vx )
     this.endpt = new uPoint(this.pos.x+this.vx, this.pos.y+this.vy);
+    console.log("c pos", this.pos);
+    console.log("c endpt", this.endpt, this.endpt.x, this.endpt.y);
+    console.log("c this", this);
   }
 }
