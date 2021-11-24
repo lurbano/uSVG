@@ -23,6 +23,7 @@ class uSvg{
 
     //set scale
     this.scale = scale;
+    this.gridScale = 10;
 
     //set xy zero
     this.setZero(zero);
@@ -34,7 +35,8 @@ class uSvg{
     drawAxes = {...this.axisDefaults, ...drawAxes};
     this.axisLines = [];
     this.axisTics = [];
-    if (drawAxes) this.drawAxes(drawAxes);
+    this.gridLines = [];
+    //if (drawAxes) this.drawAxes(drawAxes);
 
     //add definition area
     this.defs = document.createElementNS("http://www.w3.org/2000/svg","defs");
@@ -71,6 +73,11 @@ class uSvg{
     this.svg.appendChild(line);
     return line;
   }
+  //
+  // drawGridLines({stroke="#000", stroke_width="4",
+  //           dx= 10, dy= 10} = {}){
+  //
+  // }
 
   addArrow(p1, p2, {stroke="#000", stroke_width="4"} = {}){
     var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -109,14 +116,21 @@ class uSvg{
     return p;
   }
 
+
   drawAxes({w="100", h="100",
             dxTic= 10, dyTic= 10} = {}){
 
     this.removeAxes();
+    this.xmin = -w;
+    this.xmax = w;
+    this.ymin = -h;
+    this.ymax = h;
 
     let axisStyle = {'stroke': '#900',
                  'stroke_width': "1"};
     let ticStyle = {'stroke': '#900',
+                              'stroke_width': "0.5"};
+    let gridStyle = {'stroke': '#ccc',
                               'stroke_width': "0.5"};
     let p1 = new uPoint(-w,0);
     let p2 = new uPoint(w,0);
@@ -134,6 +148,14 @@ class uSvg{
     for (let y=-h; y<=h; y+=dyTic){
       this.axisTics.push(this.addLine(new uPoint(5,y), new uPoint(-5,y), ticStyle));
     }
+
+    //gridlines
+    for (let x=-w; x<=w; x+=dxTic){
+      this.gridLines.push(this.addLine(new uPoint(x, h), new uPoint(x,-h), gridStyle));
+    }
+    for (let y=-h; y<=h; y+=dyTic){
+      this.gridLines.push(this.addLine(new uPoint(w,y), new uPoint(-w,y), gridStyle));
+    }
   }
   removeAxes(){
     this.axisLines.forEach(item => item.remove());
@@ -149,6 +171,20 @@ class uSvg{
                         'angle': angle})
     v.arrow = this.addArrow(v.pos, v.endpt);
     this.vectors.push(v);
+  }
+
+  straightLine({line = new uLine(1,0), stroke="#000", stroke_width="4"} = {}){
+    let x = this.xmin;
+    let y = line.y(x) ;
+    let p1 = new uPoint(x, y);
+
+    x = this.xmax;
+    y = line.y(x) ;
+    let p2 = new uPoint(x,y);
+
+    console.log(p1, p2);
+    let l = this.addLine(p1, p2, {stroke:stroke, stroke_width:stroke_width});
+    return l;
   }
 
   addVector({base=undefined, vx=undefined, vy=undefined, magnitude=undefined, angle=undefined} = {}){
@@ -197,6 +233,15 @@ class uPoint{
   }
 }
 
+class uLine{
+  constructor(m, b) {
+    this.m = parseFloat(m);
+    this.b = parseFloat(b);
+  }
+  y(x){
+    return this.m * x + this.b;
+  }
+}
 
 class vector{
   constructor({pos=new uPoint(0,0), vx=undefined, vy=undefined, magnitude=undefined, angle=undefined} = {}){

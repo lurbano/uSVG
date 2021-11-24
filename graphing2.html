@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>SVG Test</title>
+
+    <script type="text/javascript" src="./uSvg2.js"></script>
+
+    <style media="screen">
+      svg {
+        border: 1px solid black;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Graphing SVG Test</h1>
+
+
+
+        <script type="text/javascript" id="v0">
+          svg = new uSvg();
+          console.log("adding Hello")
+          svg.addText("hello", new uPoint(-5,3), {style:{
+            fill:"#777777", "font-size":"15px"}});
+        </script>
+
+
+
+  </body>
+
+</html>
