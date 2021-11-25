@@ -1,264 +1,324 @@
-class uSvg{
-  constructor(id, {width="300", height="300",
-                   scale = 1,
-                   zero = new uPoint(0,0),
-                   drawAxes = {w : width, h : height,
-                               dxTic: 10, dyTic: 10}
-                  } = {}){
-    //console.log(document.currentScript);
-    this.id = id+"_svg";
-    this.width = parseInt(width);
-    this.height = parseInt(height);
+class uSvgGraph{
+  constructor({
+    elementInfo = {width: 400,
+             height: 400,
+             id:undefined,
+             scale:20
+            }, //html element data
+    axesInfo = {zero: new uPoint(elementInfo.width/2, elementInfo.height/2),
+            xmax: 10,
+            ymax: 10,
+            dTics: 1,
+            tics: true,
+            ticSize: 0.25,
+            dTicLabels: 2,
+            ticLableStart: -8,
+            ticLableOffset: 0.5,
+            gridlines: true,
+            axisStyle: {'stroke': '#900',
+                        'stroke-width': "1"},
+            ticStyle: {'stroke': '#900',
+                       'stroke-width': "0.5"},
+            ticLabelStyle: {"text-anchor": "middle",
+                            "fill" : "#777777",
+                            "font-size" : "10px"},
+            gridStyle: {'stroke': '#ccc',
+                        'stroke-width': "0.5"}
+           },
+
+  }={}){
+
+    this.elementInfo = elementInfo;
+    this.axesInfo = axesInfo;
+    console.log(this.elementInfo);
+
+    this.setScale(this.elementInfo.scale);
+
+    this.createElement();
+    this.drawAxes();
+  }
+
+  setScale(scale){
+    this.scale = scale;
+  }
+
+  drawAxes({axesInfo = undefined} = {}){
+    axesInfo = (axesInfo === undefined) ? this.axesInfo : axesInfo;
+
+    this.axisElements = [];
+    let xmin = -axesInfo.xmax;
+    let xmax = axesInfo.xmax;
+    let ymin = -axesInfo.ymax;
+    let ymax = axesInfo.ymax;
+    [this.xmin, this.xmax, this.ymin, this.ymax] = [xmin, xmax, ymin, ymax];
+
+    //x axis
+    let p1 = new uPoint(xmin,0);
+    let p2 = new uPoint(xmax,0);
+    this.axisElements.push(this.addLine(p1, p2, {style: axesInfo.axisStyle}));
+
+    //y axis
+    p1 = new uPoint(0, ymin);
+    p2 = new uPoint(0, ymax);
+    this.axisElements.push(this.addLine(p1, p2, {style: axesInfo.axisStyle}));
+
+    //grid lines
+    for (let x=xmin; x<=xmax; x+=axesInfo.dTics){
+      this.axisElements.push(this.addLine(new uPoint(x, ymin), new uPoint(x,ymax), {style:axesInfo.gridStyle}));
+    }
+    for (let y=ymin; y<=ymax; y+=axesInfo.dTics){
+      this.axisElements.push(this.addLine(new uPoint(xmin,y), new uPoint(xmax,y), {style: axesInfo.gridStyle}));
+    }
+
+    //tic marks
+    for (let x=xmin; x<=xmax; x+=axesInfo.dTics){
+      this.axisElements.push(this.addLine(new uPoint(x, axesInfo.ticSize), new uPoint(x,-axesInfo.ticSize), {style: axesInfo.ticStyle}));
+    }
+    for (let y=ymin; y<=ymax; y+=axesInfo.dTics){
+      this.axisElements.push(this.addLine(new uPoint(axesInfo.ticSize,y), new uPoint(-axesInfo.ticSize,y), {style:axesInfo.ticStyle}));
+    }
+    // tic labels
+    for (let x = axesInfo.ticLableStart; x <= -axesInfo.ticLableStart; x += axesInfo.dTicLabels){
+      if (x != 0) this.axisElements.push(this.addText(x, new uPoint(x, -axesInfo.ticSize*3.5), {style: axesInfo.ticLabelStyle}));
+    }
+    for (let y = axesInfo.ticLableStart; y <= -axesInfo.ticLableStart; y += axesInfo.dTicLabels){
+      if (y != 0) this.axisElements.push(this.addText(y, new uPoint(axesInfo.ticSize*-2.5,y-.25), {style: axesInfo.ticLabelStyle}));
+    }
+
+  }
+
+  addText(txt, p, {style = {}} = {}){
+    let defaultStyle = {
+      //"font-size": "10px",
+      "text-anchor": "middle"
+    }
+    style = {...defaultStyle, ...style};
+
+    let t = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    p = this.elemCoords(p);
+    t.setAttribute("x", p.x);
+    t.setAttribute("y", p.y);
+    this.setAttributes(t, style);
+    t.textContent = txt;
+    this.svg.appendChild(t);
+  }
+
+  setAttributes(element, style){
+    for (const [key, value] of Object.entries(style)){
+      //console.log(`${key} | ${value}`);
+      element.setAttribute(key, value);
+    }
+  }
+
+  addLine(p1, p2, {style = {}} = {}){
+    let defaultStyle = {
+      stroke:"#000", "stroke-width":"4"
+    };
+    style = {...defaultStyle, ...style};
+    var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    p1 = this.elemCoords(p1);
+    p2 = this.elemCoords(p2);
+    line.setAttribute("x1", p1.x);
+    line.setAttribute("y1", p1.y);
+    line.setAttribute("x2", p2.x);
+    line.setAttribute("y2", p2.y);
+    // line.setAttribute("stroke", stroke);
+    // line.setAttribute("stroke-width", stroke_width);
+    this.setAttributes(line, style);
+
+    this.svg.appendChild(line);
+    return line;
+  }
+
+  addCircle(p = new uPoint(0,0), {style={}} = {}){
+    let defaultStyle = {
+      r:4, fill:"none", stroke:"#000000",
+      "stroke-width": 1
+    };
+    style = {...defaultStyle, ...style};
+
+    let circ = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    p = this.elemCoords(p);
+
+    circ.setAttribute("cx", p.x);
+    circ.setAttribute("cy", p.y);
+    circ.setAttribute("r", style.r);
+    this.setAttributes(circ, style);
+
+    this.svg.appendChild(circ);
+    return circ;
+  }
+
+  elemCoords(p){ //convert from graph coordinates to element coordinates
+    let pn = new uPoint(0,0);
+    pn.x = p.x * this.scale + this.axesInfo.zero.x;
+    pn.y = -p.y * this.scale + this.axesInfo.zero.y;
+    //console.log(p, pn);
+    return pn;
+  }
+
+  elemScale(x){
+    return x * this.scale;
+  }
+
+  createElement({elementInfo = undefined} = {}){
+    elementInfo = (elementInfo === undefined) ? this.elementInfo : elementInfo;
+    elementInfo = {...this.elementInfo, ...elementInfo};
+
+    elementInfo.id = (elementInfo.id === undefined) ? "svg_" + Math.random().toString(36).substr(2, 5) : id;
+
     this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    this.svg.setAttribute("width", width);
-    this.svg.setAttribute("height", height);
-    this.svg.setAttribute("id", this.id);
+    this.svg.setAttribute("width", elementInfo.width);
+    this.svg.setAttribute("height", elementInfo.height);
+    this.svg.setAttribute("id", elementInfo.id);
 
     let scriptElement = document.currentScript;
     let parentElement = scriptElement.parentNode;
-
     parentElement.insertBefore(this.svg, scriptElement);
-
-    this.vectors = [];
-
-    //set scale
-    this.scale = scale;
-    this.gridScale = 10;
-
-    //set xy zero
-    this.setZero(zero);
-
-    //draw axes
-    this.axisDefaults = {w : width, h : height,
-                dxTic: 10, dyTic: 10};
-    //  merge axis properties
-    drawAxes = {...this.axisDefaults, ...drawAxes};
-    this.axisLines = [];
-    this.axisTics = [];
-    this.gridLines = [];
-    //if (drawAxes) this.drawAxes(drawAxes);
-
-    //add definition area
-    this.defs = document.createElementNS("http://www.w3.org/2000/svg","defs");
-
-    this.arrowMarkerId = "arrowhead";
-    var marker = document.createElementNS("http://www.w3.org/2000/svg", "marker");
-    marker.setAttribute("id", this.arrowMarkerId);
-    marker.setAttribute("markerWidth", "10");
-    marker.setAttribute("markerHeight", "7");
-    marker.setAttribute("refX", "0");
-    marker.setAttribute("refY", "1.75");
-    marker.setAttribute("orient", "auto");
-
-    var poly = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-    poly.setAttribute("points", "0 0, 5 1.75, 0 3.5");
-
-    marker.appendChild(poly);
-    this.defs.appendChild(marker);
-
-    this.svg.appendChild(this.defs);
+    return elementInfo.id;
   }
 
-  addLine(p1, p2, {stroke="#000", stroke_width="4"} = {}){
-    var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    p1 = this.transform(p1);
-    p2 = this.transform(p2);
-    line.setAttribute("x1", p1.x);
-    line.setAttribute("y1", p1.y);
-    line.setAttribute("x2", p2.x);
-    line.setAttribute("y2", p2.y);
-    line.setAttribute("stroke", stroke);
-    line.setAttribute("stroke-width", stroke_width);
+  drawLinearFunction(f, {style = {}} = {}){
+    let defaultStyle = {
+      stroke:"#000", "stroke-width":"2"
+    }
+    style = {...defaultStyle, ...style}
 
-    this.svg.appendChild(line);
+    let ymin = f.y(this.xmin);
+    let xmin = this.xmin;
+    if (ymin < this.ymin){
+      xmin = f.x(this.ymin);
+      ymin = f.y(xmin);
+    }
+    let ymax = f.y(this.xmax);
+    let xmax = this.xmax;
+    if ( ymax > this.ymax){
+      xmax = f.x(this.ymax);
+      ymax = f.y(xmax);
+    }
+    let p1 = new uPoint(xmin, ymin);
+    let p2 = new uPoint(xmax, ymax);
+    let newLine = this.addLine(p1, p2, {style: style});
+    if (this.lineList === undefined){this.lineList = []};
+    this.lineList.push(newLine);
+  }
+
+  labelPoint(p = new uPoint(), offset= new uPoint(0.25,0.25), {style = {}} = {}){
+    let defaultStyle = {
+      "text-anchor": "start",
+      "font-size": "10px",
+      fill: "red"
+    }
+    style = {...defaultStyle, ...style}
+
+    let loc = p.add(offset);
+
+    let txt = `(${p.x},${p.y})`;
+
+    let t = this.addText(txt, loc, {style: style})
+
+    if (this.pointLabelsList === undefined){this.pointLabelsList = []};
+    this.pointLabelsList.push(t);
+    return t;
+  }
+
+  drawPoint(p = new uPoint(),  {r=0.2, style = {}} = {}){
+    let defaultStyle = {
+      stroke:"#000", "stroke-width":"2"
+    }
+    style = {...defaultStyle, ...style}
+
+    r = this.elemScale(r);
+    style.r = r;
+    if (this.pointsList === undefined){this.pointsList = []};
+    let c = this.addCircle(p, {style});
+    this.pointsList.push(c);
+  }
+  drawPoints(pts = [new uPoint()],  {r=0.1, style = {}} = {}){
+    let defaultStyle = {
+      stroke:"#000", "stroke-width":"2"
+    }
+    style = {...defaultStyle, ...style}
+
+    r = this.elemScale(r);
+    style.r = r;
+
+    if (this.pointsList === undefined){this.pointsList = []};
+    for (const p of pts){
+      let c = this.addCircle(p, {style});
+      this.pointsList.push(c);
+    }
+
+  }
+
+  get_uLine_from_two_points(p1, p2, drawPoints= true, drawLine=true){
+    let line = get_uLine_from_two_points(p1, p2);
+    if (drawPoints) {this.drawPoints([p1, p2])}
+    if (drawLine) {this.drawLinearFunction(line)}
     return line;
   }
-  //
-  // drawGridLines({stroke="#000", stroke_width="4",
-  //           dx= 10, dy= 10} = {}){
-  //
-  // }
 
-  addArrow(p1, p2, {stroke="#000", stroke_width="4"} = {}){
-    var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    p1 = this.transform(p1);
-    p2 = this.transform(p2);
-    line.setAttribute("x1", p1.x);
-    line.setAttribute("y1", p1.y);
-    line.setAttribute("x2", p2.x);
-    line.setAttribute("y2", p2.y);
-    line.setAttribute("stroke", stroke);
-    line.setAttribute("stroke-width", stroke_width);
-
-    line.setAttribute("marker-end", "url(#arrowhead)");
-
-    this.svg.appendChild(line);
-    return line;
-  }
-
-  setZero(p){
-    this.zero = new uPoint(p.x*this.scale, p.y*this.scale);
-  }
-
-  flip(p){
-    p.y = this.height - p.y;
+  get_intersection_of_two_uLines(l1, l2, drawPoint=true){
+    let p = get_intersection_of_two_uLines(l1, l2);
+    if (drawPoint) {this.drawPoints([p])}
     return p;
   }
 
-  transform(p){
-    //scale
-    p.y *= this.scale;
-    p.x *= this.scale;
-    //console.log(this.height, p.y, this.zero.y);
-    p.y = this.height - p.y - this.zero.y;
-    p.x = p.x + this.zero.x;
-
-    return p;
-  }
-
-
-  drawAxes({w="100", h="100",
-            dxTic= 10, dyTic= 10} = {}){
-
-    this.removeAxes();
-    this.xmin = -w;
-    this.xmax = w;
-    this.ymin = -h;
-    this.ymax = h;
-
-    let axisStyle = {'stroke': '#900',
-                 'stroke_width': "1"};
-    let ticStyle = {'stroke': '#900',
-                              'stroke_width': "0.5"};
-    let gridStyle = {'stroke': '#ccc',
-                              'stroke_width': "0.5"};
-    let p1 = new uPoint(-w,0);
-    let p2 = new uPoint(w,0);
-
-    this.axisLines.push(this.addLine(p1, p2, axisStyle));
-
-    p1 = new uPoint(0, -h);
-    p2 = new uPoint(0, h);
-    this.axisLines.push(this.addLine(p1, p2, axisStyle));
-
-    //tic marks
-    for (let x=-w; x<=w; x+=dxTic){
-      this.axisTics.push(this.addLine(new uPoint(x, 5), new uPoint(x,-5), ticStyle));
-    }
-    for (let y=-h; y<=h; y+=dyTic){
-      this.axisTics.push(this.addLine(new uPoint(5,y), new uPoint(-5,y), ticStyle));
-    }
-
-    //gridlines
-    for (let x=-w; x<=w; x+=dxTic){
-      this.gridLines.push(this.addLine(new uPoint(x, h), new uPoint(x,-h), gridStyle));
-    }
-    for (let y=-h; y<=h; y+=dyTic){
-      this.gridLines.push(this.addLine(new uPoint(w,y), new uPoint(-w,y), gridStyle));
-    }
-  }
-  removeAxes(){
-    this.axisLines.forEach(item => item.remove());
-    this.axisLines = [];
-    this.axisTics.forEach(item => item.remove());
-    this.axisTics = [];
-  }
-
-  drawVector({pos=new uPoint(0,0), vx=undefined, vy=undefined, magnitude=undefined, angle=undefined} = {}){
-    var v = new vector({'pos': pos,
-                        'vx': vx, 'vy': vy,
-                        'magnitude': magnitude,
-                        'angle': angle})
-    v.arrow = this.addArrow(v.pos, v.endpt);
-    this.vectors.push(v);
-  }
-
-  straightLine({line = new uLine(1,0), stroke="#000", stroke_width="4"} = {}){
-    let x = this.xmin;
-    let y = line.y(x) ;
-    let p1 = new uPoint(x, y);
-
-    x = this.xmax;
-    y = line.y(x) ;
-    let p2 = new uPoint(x,y);
-
-    console.log(p1, p2);
-    let l = this.addLine(p1, p2, {stroke:stroke, stroke_width:stroke_width});
-    return l;
-  }
-
-  addVector({base=undefined, vx=undefined, vy=undefined, magnitude=undefined, angle=undefined} = {}){
-
-    let pos = 0;
-    console.log('aV', base);
-    if (base) {
-      console.log("create")
-      pos = base;
-    }
-    else if (this.vectors.length > 0) {
-      console.log("if", this.vectors[this.vectors.length-1].endpt)
-      pos = this.vectors[this.vectors.length-1].endpt;
-    }
-    else {
-      pos = new uPoint(0,0);
-    }
-    console.log('addVector', this.vectors.length, pos, vx, vy);
-    var v = new vector({'pos': pos,
-                        'vx': vx, 'vy': vy,
-                        'magnitude': magnitude,
-                        'angle': angle})
-    console.log("vec a", v);
-    v.arrow = this.addArrow(v.pos, v.endpt);
-    console.log("vec b", v);
-    this.vectors.push(v);
-  }
 }
 
-// arrowDef = `
-//   <defs>
-//     <marker id="arrowhead" markerWidth="10" markerHeight="7"
-//     refX="0" refY="1.75" orient="auto">
-//       <polygon points="0 0, 5 1.75, 0 3.5" />
-//     </marker>
-//   </defs>
-// `;
 
 class uPoint{
-  constructor(x, y) {
+  constructor(x=0, y=0) {
     this.x = parseFloat(x);
     this.y = parseFloat(y);
   }
   flip(ymax){
     this.y = ymax - this.y;
   }
+  add(p){
+    let x = this.x + p.x;
+    let y = this.y + p.y;
+    return new uPoint(x,y);
+  }
 }
 
 class uLine{
-  constructor(m, b) {
-    this.m = parseFloat(m);
-    this.b = parseFloat(b);
+  constructor(m=1, b=0){
+    this.generalForm = "y=mx+b";
+    this.slope = this.m = m;
+    this.intercept = this.b = b;
   }
   y(x){
-    return this.m * x + this.b;
+    let y = this.m * x + this.b;
+    //console.log(x, y);
+    return y;
+  }
+  x(y){ return (y - this.b) / this.m; }
+
+  eqnAsText(){
+    let txt = 'y =';
+
+    if (this.m != 0){
+      if (this.m == 1) {       txt += " x" ;         }
+      else if (this.m == -1) { txt += " -x";         }
+      else {                   txt += ` ${this.m}x`; }
+    }
+
+    if (this.b != 0) {
+      if (this.b < 0) { txt += " -"; }
+      else { if (this.m != 0) {txt += " +";}}
+      txt += ` ${Math.abs(this.b)}` ;
+    }
+    return txt;
   }
 }
-
-class vector{
-  constructor({pos=new uPoint(0,0), vx=undefined, vy=undefined, magnitude=undefined, angle=undefined} = {}){
-
-    this.pos = pos;
-    console.log("c vec", this.pos, this.pos.x, this.pos.y);
-    if (vx && vy){
-      this.vx = vx; this.vy = vy;
-    }
-    else if(magnitude && angle){
-      this.vx = magnitude * Math.cos(Math.radians(angle));
-      this.vy = magnitude * Math.sin(Math.radians(angle));
-    }
-    console.log('addition', this.pos.x, this.vx, this.pos.x+this.vx )
-    this.endpt = new uPoint(this.pos.x+this.vx, this.pos.y+this.vy);
-    console.log("c pos", this.pos);
-    console.log("c endpt", this.endpt, this.endpt.x, this.endpt.y);
-    console.log("c this", this);
-  }
+function get_uLine_from_two_points(p1, p2){
+  let m = (p2.y - p1.y) / (p2.x - p1.x);
+  let b = p1.y - m * p1.x;
+  return new uLine(m, b);
+}
+function get_intersection_of_two_uLines(l1, l2){
+  let x = (l2.b - l1.b) / (l1.m - l2.m);
+  let y = l1.m * x + l1.b;
+  return new uPoint(x, y);
 }

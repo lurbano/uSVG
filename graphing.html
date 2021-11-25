@@ -19,17 +19,22 @@
 
 
         <script type="text/javascript" id="v0">
-          svg = new uSvg("vec1", {
-            width: 400,
-            height: 400,
-            scale: 2
-          });
-          svg.setZero(new uPoint(100,100));
-          //svg.removeAxes();
-          svg.drawAxes({w:"100", h:"100"});
-          svg.addLine(new uPoint(0, 50), new uPoint(200,50),
-                      { stroke_width: "1"});
-          svg.straightLine({line:new uLine(0.5,2), stroke_width: "2"});
+          svg = new uSvgGraph();
+          console.log("adding Line")
+          line1 = new uLine(-2, -1);
+          console.log(line1.eqnAsText());
+          svg.drawLinearFunction(line1, {style:{stroke:"#0000ff"}});
+          p1 = new uPoint(-5,-1);
+          p2 = new uPoint(6,5);
+          svg.drawPoints([p1, p2], {r:0.1});
+          line2 = svg.get_uLine_from_two_points(new uPoint(3,-1), new uPoint(-4,5));
+          pIntersect = svg.get_intersection_of_two_uLines(line1, line2);
+          console.log(pIntersect);
+          svg.labelPoint(p2);
+
+
+          // svg.addText("hello", new uPoint(-5,3), {style:{
+          //   fill:"#777777", "font-size":"15px"}});
         </script>
 
 
