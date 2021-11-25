@@ -16,14 +16,14 @@ class uSvgGraph{
             ticLableOffset: 0.5,
             gridlines: true,
             axisStyle: {'stroke': '#900',
-                        'stroke-width': "1"},
+                        'stroke_width': "1"},
             ticStyle: {'stroke': '#900',
-                       'stroke-width': "0.5"},
+                       'stroke_width': "0.5"},
             ticLabelStyle: {"text-anchor": "middle",
                             "fill" : "#777777",
                             "font-size" : "10px"},
             gridStyle: {'stroke': '#ccc',
-                        'stroke-width': "0.5"}
+                        'stroke_width': "0.5"}
            },
 
   }={}){
@@ -55,27 +55,19 @@ class uSvgGraph{
     //x axis
     let p1 = new uPoint(xmin,0);
     let p2 = new uPoint(xmax,0);
-    this.axisElements.push(this.addLine(p1, p2, {style: axesInfo.axisStyle}));
+    this.axisElements.push(this.addLine(p1, p2, axesInfo.axisStyle));
 
     //y axis
     p1 = new uPoint(0, ymin);
     p2 = new uPoint(0, ymax);
-    this.axisElements.push(this.addLine(p1, p2, {style: axesInfo.axisStyle}));
-
-    //grid lines
-    for (let x=xmin; x<=xmax; x+=axesInfo.dTics){
-      this.axisElements.push(this.addLine(new uPoint(x, ymin), new uPoint(x,ymax), {style:axesInfo.gridStyle}));
-    }
-    for (let y=ymin; y<=ymax; y+=axesInfo.dTics){
-      this.axisElements.push(this.addLine(new uPoint(xmin,y), new uPoint(xmax,y), {style: axesInfo.gridStyle}));
-    }
+    this.axisElements.push(this.addLine(p1, p2, axesInfo.axisStyle));
 
     //tic marks
     for (let x=xmin; x<=xmax; x+=axesInfo.dTics){
-      this.axisElements.push(this.addLine(new uPoint(x, axesInfo.ticSize), new uPoint(x,-axesInfo.ticSize), {style: axesInfo.ticStyle}));
+      this.axisElements.push(this.addLine(new uPoint(x, axesInfo.ticSize), new uPoint(x,-axesInfo.ticSize), axesInfo.ticStyle));
     }
     for (let y=ymin; y<=ymax; y+=axesInfo.dTics){
-      this.axisElements.push(this.addLine(new uPoint(axesInfo.ticSize,y), new uPoint(-axesInfo.ticSize,y), {style:axesInfo.ticStyle}));
+      this.axisElements.push(this.addLine(new uPoint(axesInfo.ticSize,y), new uPoint(-axesInfo.ticSize,y), axesInfo.ticStyle));
     }
     // tic labels
     for (let x = axesInfo.ticLableStart; x <= -axesInfo.ticLableStart; x += axesInfo.dTicLabels){
@@ -83,6 +75,14 @@ class uSvgGraph{
     }
     for (let y = axesInfo.ticLableStart; y <= -axesInfo.ticLableStart; y += axesInfo.dTicLabels){
       if (y != 0) this.axisElements.push(this.addText(y, new uPoint(axesInfo.ticSize*-2.5,y-.25), {style: axesInfo.ticLabelStyle}));
+    }
+
+    //grid lines
+    for (let x=xmin; x<=xmax; x+=axesInfo.dTics){
+      this.axisElements.push(this.addLine(new uPoint(x, ymin), new uPoint(x,ymax), axesInfo.gridStyle));
+    }
+    for (let y=ymin; y<=ymax; y+=axesInfo.dTics){
+      this.axisElements.push(this.addLine(new uPoint(xmin,y), new uPoint(xmax,y), axesInfo.gridStyle));
     }
 
   }
@@ -99,33 +99,25 @@ class uSvgGraph{
     p = this.elemCoords(p);
     t.setAttribute("x", p.x);
     t.setAttribute("y", p.y);
-    this.setAttributes(t, style);
+    for (const [key, value] of Object.entries(style)){
+      //console.log(`${key} | ${value}`);
+      t.setAttribute(key, value);
+    }
     t.textContent = txt;
     this.svg.appendChild(t);
   }
 
-  setAttributes(element, style){
-    for (const [key, value] of Object.entries(style)){
-      //console.log(`${key} | ${value}`);
-      element.setAttribute(key, value);
-    }
-  }
-
-  addLine(p1, p2, {style = {}} = {}){
-    let defaultStyle = {
-      stroke:"#000", "stroke-width":"4"
-    };
-    style = {...defaultStyle, ...style};
+  addLine(p1, p2, {stroke="#000", stroke_width="4"} = {}){
     var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    console.log(p1, p2);
     p1 = this.elemCoords(p1);
     p2 = this.elemCoords(p2);
     line.setAttribute("x1", p1.x);
     line.setAttribute("y1", p1.y);
     line.setAttribute("x2", p2.x);
     line.setAttribute("y2", p2.y);
-    // line.setAttribute("stroke", stroke);
-    // line.setAttribute("stroke-width", stroke_width);
-    this.setAttributes(line, style);
+    line.setAttribute("stroke", stroke);
+    line.setAttribute("stroke-width", stroke_width);
 
     this.svg.appendChild(line);
     return line;
@@ -164,12 +156,13 @@ class uSvgGraph{
 
   drawLinearFunction(f, {style = {}} = {}){
     let defaultStyle = {
-      stroke:"#000", "stroke-width":"2"
+      stroke:"#000", stroke_width:"2"
     }
     style = {...defaultStyle, ...style}
 
     let ymin = f.y(this.xmin);
     let xmin = this.xmin;
+    console.log("min max", xmin, ymin);
     if (ymin < this.ymin){
       xmin = f.x(this.ymin);
       ymin = f.y(xmin);
@@ -182,16 +175,10 @@ class uSvgGraph{
     }
     let p1 = new uPoint(xmin, ymin);
     let p2 = new uPoint(xmax, ymax);
-    let newLine = this.addLine(p1, p2, {style: style});
+    console.log("p1,p2",p1, p2);
+    let newLine = this.addLine(p1, p2, {style});
     if (this.lineFuncs === undefined){this.lineFuncs = []};
     this.lineFuncs.push(newLine);
-  }
-
-  drawPoint(p = new uPoint(0,0)){
-    let defaultStyle = {
-      r:5, fill:"none",
-      "stroke-width": 1
-    }
   }
 
 }
@@ -215,25 +202,8 @@ class uLine{
   }
   y(x){
     let y = this.m * x + this.b;
-    //console.log(x, y);
+    console.log(x, y);
     return y;
   }
   x(y){ return (y - this.b) / this.m; }
-
-  eqnAsText(){
-    let txt = 'y =';
-
-    if (this.m != 0){
-      if (this.m == 1) {       txt += " x" ;         }
-      else if (this.m == -1) { txt += " -x";         }
-      else {                   txt += ` ${this.m}x`; }
-    }
-
-    if (this.b != 0) {
-      if (this.b < 0) { txt += " -"; }
-      else { if (this.m != 0) {txt += " +";}}
-      txt += ` ${Math.abs(this.b)}` ;
-    }
-    return txt;
-  }
 }
