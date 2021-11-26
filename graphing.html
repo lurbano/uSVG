@@ -26,7 +26,7 @@
           svg.drawLinearFunction(line1, {style:{stroke:"#0000ff"}});
           p1 = new uPoint(-5,-1);
           p2 = new uPoint(6,5);
-          svg.drawPoints([p1, p2], {r:0.1});
+          svg.drawPoints([p1, p2], r=0.1);
           line2 = svg.get_uLine_from_two_points(new uPoint(3,-1), new uPoint(-4,5));
           pIntersect = svg.get_intersection_of_two_uLines(line1, line2);
           console.log(pIntersect);

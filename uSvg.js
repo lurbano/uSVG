@@ -188,7 +188,7 @@ class uSvgGraph{
     return elementInfo.id;
   }
 
-  drawLinearFunction(f, {style = {}} = {}){
+  drawLinearFunction(f = new uLine(), {style = {}} = {}){
     let defaultStyle = {
       stroke:"#000", "stroke-width":"2"
     }
@@ -232,7 +232,7 @@ class uSvgGraph{
     return t;
   }
 
-  drawPoint(p = new uPoint(),  {r=0.2, style = {}} = {}){
+  drawPoint(p = new uPoint(), r=0.2, {style = {}} = {}){
     let defaultStyle = {
       stroke:"#000", "stroke-width":"2"
     }
@@ -244,7 +244,7 @@ class uSvgGraph{
     let c = this.addCircle(p, {style});
     this.pointsList.push(c);
   }
-  drawPoints(pts = [new uPoint()],  {r=0.1, style = {}} = {}){
+  drawPoints(pts = [new uPoint()], r=0.1, { style = {}} = {}){
     let defaultStyle = {
       stroke:"#000", "stroke-width":"2"
     }
@@ -269,7 +269,8 @@ class uSvgGraph{
   }
 
   get_intersection_of_two_uLines(l1, l2, drawPoint=true){
-    let p = get_intersection_of_two_uLines(l1, l2);
+    //let p = get_intersection_of_two_uLines(l1, l2);
+    let p = l1.intersectWith(l2);
     if (drawPoint) {this.drawPoints([p])}
     return p;
   }
@@ -285,7 +286,7 @@ class uPoint{
   flip(ymax){
     this.y = ymax - this.y;
   }
-  add(p){
+  add(p = new uPoint()){
     let x = this.x + p.x;
     let y = this.y + p.y;
     return new uPoint(x,y);
@@ -321,14 +322,20 @@ class uLine{
     }
     return txt;
   }
+  intersectWith(line = new uLine()){
+    let l1 = line; let l2 = this;
+    let x = (l2.b - l1.b) / (l1.m - l2.m);
+    let y = l1.m * x + l1.b;
+    return new uPoint(x, y);
+  }
 }
-function get_uLine_from_two_points(p1, p2){
+function get_uLine_from_two_points(p1 = new uPoint(), p2 = new uPoint(1,1)){
   let m = (p2.y - p1.y) / (p2.x - p1.x);
   let b = p1.y - m * p1.x;
   return new uLine(m, b);
 }
-function get_intersection_of_two_uLines(l1, l2){
-  let x = (l2.b - l1.b) / (l1.m - l2.m);
-  let y = l1.m * x + l1.b;
-  return new uPoint(x, y);
-}
+// function get_intersection_of_two_uLines(l1, l2){
+//   let x = (l2.b - l1.b) / (l1.m - l2.m);
+//   let y = l1.m * x + l1.b;
+//   return new uPoint(x, y);
+// }
