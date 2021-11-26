@@ -1,36 +1,46 @@
 class uSvgGraph{
   constructor({
-    elementInfo = {width: 400,
-             height: 400,
-             id:undefined,
-             scale:20
-            }, //html element data
-    axesInfo = {zero: new uPoint(elementInfo.width/2, elementInfo.height/2),
-            xmax: 10,
-            ymax: 10,
-            dTics: 1,
-            tics: true,
-            ticSize: 0.25,
-            dTicLabels: 2,
-            ticLableStart: -8,
-            ticLableOffset: 0.5,
-            gridlines: true,
-            axisStyle: {'stroke': '#900',
-                        'stroke-width': "1"},
-            ticStyle: {'stroke': '#900',
-                       'stroke-width': "0.5"},
-            ticLabelStyle: {"text-anchor": "middle",
-                            "fill" : "#777777",
-                            "font-size" : "10px"},
-            gridStyle: {'stroke': '#ccc',
-                        'stroke-width': "0.5"}
-           },
-
+    elementInfo = {}, //html element data
+    axesInfo = {},
   }={}){
 
-    this.elementInfo = elementInfo;
-    this.axesInfo = axesInfo;
-    console.log(this.elementInfo);
+    let defaultElementInfo = {
+      width: 400,
+      height: 400,
+      id:undefined,
+      scale:"auto"
+    }
+    this.elementInfo = {...defaultElementInfo, ...elementInfo};
+
+    let defaultAxesInfo = {
+      zero: new uPoint(this.elementInfo.width/2, this.elementInfo.height/2),
+      xmax: 10,
+      ymax: 10,
+      dTics: 1,
+      tics: true,
+      ticSize: 0.25,
+      dTicLabels: 2,
+      ticLableStart: -8,
+      ticLableOffset: 0.5,
+      gridlines: true,
+      axisStyle: {'stroke': '#900',
+                  'stroke-width': "1"},
+      ticStyle: {'stroke': '#900',
+                 'stroke-width': "0.5"},
+      ticLabelStyle: {"text-anchor": "middle",
+                      "fill" : "#777777",
+                      "font-size" : "10px"},
+      gridStyle: {'stroke': '#ccc',
+                  'stroke-width': "0.5"}
+    }
+    this.axesInfo = {...defaultAxesInfo, ...axesInfo};
+
+    if (this.elementInfo.scale === 'auto') {
+     this.elementInfo.scale = Math.max(this.elementInfo.height, this.elementInfo.width) / (2*this.axesInfo.xmax);
+   }
+    //console.log(this.elementInfo.height);
+
+    //console.log(this.axesInfo.zero);
 
     this.setScale(this.elementInfo.scale);
 
