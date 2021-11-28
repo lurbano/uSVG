@@ -178,9 +178,10 @@ class uSvgGraph{
     elementInfo.id = (elementInfo.id === undefined) ? "svg_" + Math.random().toString(36).substr(2, 5) : id;
 
     this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    this.svg.setAttribute("width", elementInfo.width);
-    this.svg.setAttribute("height", elementInfo.height);
-    this.svg.setAttribute("id", elementInfo.id);
+    // this.svg.setAttribute("width", elementInfo.width);
+    // this.svg.setAttribute("height", elementInfo.height);
+    // this.svg.setAttribute("id", elementInfo.id);
+    this.setAttributes(this.svg, elementInfo);
 
     let scriptElement = document.currentScript;
     let parentElement = scriptElement.parentNode;
