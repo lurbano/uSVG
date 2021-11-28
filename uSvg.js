@@ -1,5 +1,6 @@
 class uSvgGraph{
   constructor({
+    divId = undefined,
     elementInfo = {}, //html element data
     axesInfo = {},
   }={}){
@@ -35,6 +36,8 @@ class uSvgGraph{
     }
     this.axesInfo = {...defaultAxesInfo, ...axesInfo};
 
+    this.divId = divId;
+
     if (this.elementInfo.scale === 'auto') {
      this.elementInfo.scale = Math.max(this.elementInfo.height, this.elementInfo.width) / (2*this.axesInfo.xmax);
    }
@@ -44,8 +47,13 @@ class uSvgGraph{
 
     this.setScale(this.elementInfo.scale);
 
-    this.createElement();
+    this.elementInfo.id = this.createElement();
     this.drawAxes();
+    return this.elementInfo.id;
+  }
+
+  remove(){
+    this.svg.remove();
   }
 
   setScale(scale){
@@ -178,14 +186,18 @@ class uSvgGraph{
     elementInfo.id = (elementInfo.id === undefined) ? "svg_" + Math.random().toString(36).substr(2, 5) : id;
 
     this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    // this.svg.setAttribute("width", elementInfo.width);
-    // this.svg.setAttribute("height", elementInfo.height);
-    // this.svg.setAttribute("id", elementInfo.id);
     this.setAttributes(this.svg, elementInfo);
 
-    let scriptElement = document.currentScript;
-    let parentElement = scriptElement.parentNode;
-    parentElement.insertBefore(this.svg, scriptElement);
+    if (this.divId === undefined) {
+      let scriptElement = document.currentScript;
+      let parentElement = scriptElement.parentNode;
+      parentElement.insertBefore(this.svg, scriptElement);
+      }
+    else {
+      let parentElement = document.getElementById(this.divId);
+      parentElement.appendChild(this.svg);
+    }
+
     return elementInfo.id;
   }
 
@@ -251,7 +263,8 @@ class uSvgGraph{
 
     let loc = p.add(offset);
 
-    let txt = `(${p.x},${p.y})`;
+    //let txt = `(${p.x},${p.y})`;
+    let txt = p.asText();
 
     let t = this.addText(txt, loc, {style: style})
 
@@ -330,8 +343,13 @@ class uPoint{
     let y = this.y + p.y;
     return new uPoint(x,y);
   }
-  asText(){
-    return `(${this.x}, ${this.y})`;
+  asText({round=1}={}){
+    if (round <= 1){
+      let n = this.x.toFixed(1).toString();
+      let tenth = parseInt(n[n.length-1]);
+      if (tenth == 0) {round = 0;}
+    }
+    return `(${this.x.toFixed(round)}, ${this.y.toFixed(round)})`;
   }
 }
 
@@ -365,7 +383,7 @@ class uLine{
     }
     return txt;
   }
-  asText(){
+  asText({round=2}={}){
     return this.eqnAsText();
   }
   intersectWith(line = new uLine()){
