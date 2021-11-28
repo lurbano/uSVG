@@ -19,7 +19,7 @@
 
 
         <script type="text/javascript" id="v0">
-          svg = new uSvgGraph({elementInfo:{width:300,height:300}});
+          svg = new uSvgGraph({elementInfo:{width:300,height:300, style:'border:5px solid black;'}});
           console.log("adding Line")
           line1 = new uLine(-2, -1);
           console.log("line1:", line1.eqnAsText());
@@ -31,6 +31,7 @@
           pIntersect = svg.get_intersection_of_two_uLines(line1, line2);
           console.log(pIntersect);
           svg.labelPoint(p2);
+          svg.labelLinearFunction(line1, x=4, offset=new uPoint(0.5,0.5));
 
           line3 = svg.get_uLine_from_two_points(new uPoint(3,6), new uPoint(-6,-1));
           line4 = svg.get_uLine_from_two_points(new uPoint(3,6), new uPoint(-6,8));

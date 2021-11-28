@@ -178,9 +178,10 @@ class uSvgGraph{
     elementInfo.id = (elementInfo.id === undefined) ? "svg_" + Math.random().toString(36).substr(2, 5) : id;
 
     this.svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    this.svg.setAttribute("width", elementInfo.width);
-    this.svg.setAttribute("height", elementInfo.height);
-    this.svg.setAttribute("id", elementInfo.id);
+    // this.svg.setAttribute("width", elementInfo.width);
+    // this.svg.setAttribute("height", elementInfo.height);
+    // this.svg.setAttribute("id", elementInfo.id);
+    this.setAttributes(this.svg, elementInfo);
 
     let scriptElement = document.currentScript;
     let parentElement = scriptElement.parentNode;
@@ -192,7 +193,7 @@ class uSvgGraph{
     let defaultStyle = {
       stroke:"#000", "stroke-width":"2"
     }
-    style = {...defaultStyle, ...style}
+    style = {...defaultStyle, ...style};
 
     //let [xm, ym] = [this.xmin, this.ymin];
     let p1 = new uPoint(this.xmin, f.y(this.xmin));
@@ -216,6 +217,28 @@ class uSvgGraph{
     let newLine = this.addLine(p1, p2, {style: style});
     if (this.lineList === undefined){this.lineList = []};
     this.lineList.push(newLine);
+
+  }
+
+  labelLinearFunction(f = new uLine(), x = 0, offset= new uPoint(0.25,0.25), {style = {}} = {}){
+    let defaultStyle = {
+      "text-anchor": "start",
+      "font-size": "10px",
+      fill: "red"
+    }
+    style = {...defaultStyle, ...style};
+
+    let loc = new uPoint(x, f.y(x));
+    loc = loc.add(offset);
+
+    let txt = f.eqnAsText();
+
+    let t = this.addText(txt, loc, {style: style})
+
+    if (this.pointLabelsList === undefined){this.pointLabelsList = []};
+    this.pointLabelsList.push(t);
+    return t;
+
   }
 
   labelPoint(p = new uPoint(), offset= new uPoint(0.25,0.25), {style = {}} = {}){

@@ -14,6 +14,7 @@ svg = new uSvgGraph({elementInfo:{width:300,height:300}});
 
 Graphing Methods:
 * `drawLinearFunction(f = new uLine(), {style})`: draw y=mx+b line where f is a `uLine(m,b)` class instance.
+* `labelLinearFunction(f = new uLine(), x = 0, offset= new uPoint(0.25,0.25), {style})`: Adds a label to the linear function.
 * `drawPoints(pts = [new uPoint()], r=0.1, {style})`: draw an array of uPoints on the graph (uses `drawPoint` method)
 * `drawPoint(p = new uPoint(), r=0.2, {style})`: draw a circle at the given point's (x,y) coordinates (using p as `uPoint(x,y)`)
 * `labelPoint(p = new uPoint(), offset = new uPoint(0.25,0.25), {style})`: add a "(x,y)" label to a point (p and offset are `uPoints`)
