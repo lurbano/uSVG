@@ -318,6 +318,10 @@ class uPoint{
     this.x = parseFloat(x);
     this.y = parseFloat(y);
   }
+  distanceTo(p = new uPoint()){
+    let d = ((this.x-p.x)**2 + (this.y-p.y)**2)**0.5
+    return d;
+  }
   flip(ymax){
     this.y = ymax - this.y;
   }
