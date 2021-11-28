@@ -227,7 +227,7 @@ class uSvgGraph{
       fill: "red"
     }
     style = {...defaultStyle, ...style};
-    console.log("x", x);
+    //console.log("x", x);
     let loc = new uPoint(x, f.y(x));
     loc = loc.add(offset);
 
@@ -330,6 +330,9 @@ class uPoint{
     let y = this.y + p.y;
     return new uPoint(x,y);
   }
+  asText(){
+    return `(${this.x}, ${this.y})`;
+  }
 }
 
 class uLine{
@@ -361,6 +364,9 @@ class uLine{
       txt += ` ${Math.abs(this.b)}` ;
     }
     return txt;
+  }
+  asText(){
+    return this.eqnAsText();
   }
   intersectWith(line = new uLine()){
     let l1 = line; let l2 = this;
