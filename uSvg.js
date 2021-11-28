@@ -194,20 +194,25 @@ class uSvgGraph{
     }
     style = {...defaultStyle, ...style}
 
-    let ymin = f.y(this.xmin);
-    let xmin = this.xmin;
-    if (ymin < this.ymin){
-      xmin = f.x(this.ymin);
-      ymin = f.y(xmin);
+    //let [xm, ym] = [this.xmin, this.ymin];
+    let p1 = new uPoint(this.xmin, f.y(this.xmin));
+    let p2 = new uPoint(this.xmax, f.y(this.xmax));
+
+    if (p1.y > this.ymax) {
+      p1.y = this.ymax;
     }
-    let ymax = f.y(this.xmax);
-    let xmax = this.xmax;
-    if ( ymax > this.ymax){
-      xmax = f.x(this.ymax);
-      ymax = f.y(xmax);
+    if (p1.y < this.ymin){
+      p1.y = this.ymin;
     }
-    let p1 = new uPoint(xmin, ymin);
-    let p2 = new uPoint(xmax, ymax);
+    p1.x = f.x(p1.y);
+    if (p2.y > this.ymax) {
+      p2.y = this.ymax;
+    }
+    if (p2.y < this.ymin){
+      p2.y = this.ymin;
+    }
+    p2.x = f.x(p2.y);
+
     let newLine = this.addLine(p1, p2, {style: style});
     if (this.lineList === undefined){this.lineList = []};
     this.lineList.push(newLine);
