@@ -31,7 +31,7 @@
           pIntersect = svg.get_intersection_of_two_uLines(line1, line2);
           console.log(pIntersect);
           svg.labelPoint(p2);
-          svg.labelLinearFunction(line1, x=4, offset=new uPoint(0.5,0.5));
+          svg.labelLinearFunction(line1, {x:4, offset:new uPoint(0.5,0.5)});
 
           line3 = svg.get_uLine_from_two_points(new uPoint(3,6), new uPoint(-6,-1));
           line4 = svg.get_uLine_from_two_points(new uPoint(3,6), new uPoint(-6,8));

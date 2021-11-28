@@ -220,14 +220,14 @@ class uSvgGraph{
 
   }
 
-  labelLinearFunction(f = new uLine(), x = 0, offset= new uPoint(0.25,0.25), {style = {}} = {}){
+  labelLinearFunction(f = new uLine(), {x = 0, offset= new uPoint(0.25,0.25), style = {}} = {}){
     let defaultStyle = {
       "text-anchor": "start",
       "font-size": "10px",
       fill: "red"
     }
     style = {...defaultStyle, ...style};
-
+    console.log("x", x);
     let loc = new uPoint(x, f.y(x));
     loc = loc.add(offset);
 
@@ -241,7 +241,7 @@ class uSvgGraph{
 
   }
 
-  labelPoint(p = new uPoint(), offset= new uPoint(0.25,0.25), {style = {}} = {}){
+  labelPoint(p = new uPoint(), {offset= new uPoint(0.25,0.25), style = {}} = {}){
     let defaultStyle = {
       "text-anchor": "start",
       "font-size": "10px",
@@ -289,24 +289,24 @@ class uSvgGraph{
 
   }
 
-  get_uLine_from_two_points(p1, p2, drawPoints= true, drawLine=true){
+  get_uLine_from_two_points(p1, p2, {drawPoints= true, drawLine=true}={}){
     let line = get_uLine_from_two_points(p1, p2);
     if (drawPoints) {this.drawPoints([p1, p2])}
     if (drawLine) {this.drawLinearFunction(line)}
     return line;
   }
 
-  get_intersection_of_two_uLines(l1, l2, drawPoint=true, { style = {}} = {}){
+  get_intersection_of_two_uLines(l1, l2, {drawPoint=true, style = {}} = {}){
     //let p = get_intersection_of_two_uLines(l1, l2);
     let p = l1.intersectWith(l2);
     if (drawPoint) {this.drawPoints([p], {style:style});}
     return p;
   }
 
-  get_uLine_from_slope_and_point(m = 1, pt = new uPoint(1,1), drawPoint=true, drawLine=true){
+  get_uLine_from_slope_and_point(m = 1, pt = new uPoint(1,1), {drawPoint=true, drawLine=true, pointStyle={}, lineStyle={}}={}){
     let line = get_uLine_from_slope_and_point(m, pt);
-    if (drawPoint) {this.drawPoints([pt])}
-    if (drawLine) {this.drawLinearFunction(line)}
+    if (drawPoint) {this.drawPoints([pt], {style:pointStyle})}
+    if (drawLine) {this.drawLinearFunction(line, {style:lineStyle})}
     return line;
   }
 
