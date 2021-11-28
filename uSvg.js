@@ -152,7 +152,7 @@ class uSvgGraph{
 
     circ.setAttribute("cx", p.x);
     circ.setAttribute("cy", p.y);
-    circ.setAttribute("r", style.r);
+    // circ.setAttribute("r", style.r);
     this.setAttributes(circ, style);
 
     this.svg.appendChild(circ);
@@ -260,26 +260,26 @@ class uSvgGraph{
     return t;
   }
 
-  drawPoint(p = new uPoint(), r=0.2, {style = {}} = {}){
+  drawPoint(p = new uPoint(), {style = {}} = {}){
     let defaultStyle = {
-      stroke:"#000", "stroke-width":"2"
+      stroke:"#000", "stroke-width":"2", r:0.2
     }
     style = {...defaultStyle, ...style}
 
-    r = this.elemScale(r);
-    style.r = r;
+    style.r = this.elemScale(style.r);
+    // style.r = r;
     if (this.pointsList === undefined){this.pointsList = []};
     let c = this.addCircle(p, {style});
     this.pointsList.push(c);
   }
-  drawPoints(pts = [new uPoint()], r=0.1, { style = {}} = {}){
+  drawPoints(pts = [new uPoint()], { style = {}} = {}){
     let defaultStyle = {
-      stroke:"#000", "stroke-width":"2"
+      stroke:"#000", "stroke-width":"2", r:0.2
     }
     style = {...defaultStyle, ...style}
 
-    r = this.elemScale(r);
-    style.r = r;
+    style.r = this.elemScale(style.r);
+    // style.r = r;
 
     if (this.pointsList === undefined){this.pointsList = []};
     for (const p of pts){
@@ -296,11 +296,18 @@ class uSvgGraph{
     return line;
   }
 
-  get_intersection_of_two_uLines(l1, l2, drawPoint=true){
+  get_intersection_of_two_uLines(l1, l2, drawPoint=true, { style = {}} = {}){
     //let p = get_intersection_of_two_uLines(l1, l2);
     let p = l1.intersectWith(l2);
-    if (drawPoint) {this.drawPoints([p])}
+    if (drawPoint) {this.drawPoints([p], {style:style});}
     return p;
+  }
+
+  get_uLine_from_slope_and_point(m = 1, pt = new uPoint(1,1), drawPoint=true, drawLine=true){
+    let line = get_uLine_from_slope_and_point(m, pt);
+    if (drawPoint) {this.drawPoints([pt])}
+    if (drawLine) {this.drawLinearFunction(line)}
+    return line;
   }
 
 }
@@ -333,6 +340,7 @@ class uLine{
     return y;
   }
   x(y){ return (y - this.b) / this.m; }
+  perpSlope(){ return -(1/this.slope);}
 
   eqnAsText(){
     let txt = 'y =';
@@ -360,6 +368,10 @@ class uLine{
 function get_uLine_from_two_points(p1 = new uPoint(), p2 = new uPoint(1,1)){
   let m = (p2.y - p1.y) / (p2.x - p1.x);
   let b = p1.y - m * p1.x;
+  return new uLine(m, b);
+}
+function get_uLine_from_slope_and_point(m = 1, pt = new uPoint(1,1)){
+  let b = pt.y - m * pt.x;
   return new uLine(m, b);
 }
 // function get_intersection_of_two_uLines(l1, l2){
