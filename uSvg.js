@@ -213,18 +213,21 @@ class uSvgGraph{
 
     if (p1.y > this.ymax) {
       p1.y = this.ymax;
+      p1.x = f.x(p1.y);
     }
     if (p1.y < this.ymin){
       p1.y = this.ymin;
+      p1.x = f.x(p1.y);
     }
-    p1.x = f.x(p1.y);
+
     if (p2.y > this.ymax) {
       p2.y = this.ymax;
+      p2.x = f.x(p2.y);
     }
     if (p2.y < this.ymin){
       p2.y = this.ymin;
+      p2.x = f.x(p2.y);
     }
-    p2.x = f.x(p2.y);
 
     let newLine = this.addLine(p1, p2, {style: style});
     if (this.lineList === undefined){this.lineList = []};
@@ -358,6 +361,7 @@ class uLine{
     this.generalForm = "y=mx+b";
     this.slope = this.m = m;
     this.intercept = this.b = b;
+    this.vertical = isFinite(m) ? false : true;
   }
   y(x){
     let y = this.m * x + this.b;
@@ -365,7 +369,15 @@ class uLine{
     return y;
   }
   x(y){ return (y - this.b) / this.m; }
-  perpSlope(){ return -(1/this.slope);}
+
+  perpSlope(){
+    let mp = -(1/this.slope);
+    if (isFinite(mp) === false){
+      console.log("uLine.perpSlope is vertical");
+      mp = undefined;
+    }
+    return mp;
+  }
 
   eqnAsText(){
     let txt = 'y =';
@@ -380,6 +392,10 @@ class uLine{
       if (this.b < 0) { txt += " -"; }
       else { if (this.m != 0) {txt += " +";}}
       txt += ` ${Math.abs(this.b)}` ;
+    }
+
+    if (this.m == 0 && this.b == 0){
+      txt += " 0";
     }
     return txt;
   }

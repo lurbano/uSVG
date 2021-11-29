@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>SVG Test</title>
+
+    <script type="text/javascript" src="./uSvg.js"></script>
+
+    <style media="screen">
+      svg {
+        border: 1px solid black;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Graphing SVG Test</h1>
+
+
+
+        <script type="text/javascript" id="v0">
+          svg = new uSvgGraph({elementInfo:{width:300,height:300, style:'border:5px solid black;'}});
+          console.log("adding Line")
+          line1 = new uLine(-2, -1);
+          console.log("line1:", line1.eqnAsText());
+          svg.drawLinearFunction(line1, {style:{stroke:"#0000ff"}});
+          p1 = new uPoint(-5,-1);
+          p2 = new uPoint(6,5);
+          svg.drawPoints([p1, p2], r=0.1);
+          line2 = svg.get_uLine_from_two_points(new uPoint(3,6), new uPoint(-4,-9));
+          pIntersect = svg.get_intersection_of_two_uLines(line1, line2);
+          console.log(pIntersect);
+          svg.labelPoint(p2);
+          svg.labelLinearFunction(line1, {x:4, offset:new uPoint(0.5,0.5)});
+
+
+          console.log(line1.perpSlope());
+          linePerp = svg.get_uLine_from_slope_and_point(line1.perpSlope(), p2);
+
+
+        </script>
+
+
+
+  </body>
+
+</html>
