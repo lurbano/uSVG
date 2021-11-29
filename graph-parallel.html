@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>SVG Test</title>
+
+    <script type="text/javascript" src="./uSvg.js"></script>
+
+    <style media="screen">
+      svg {
+        border: 1px solid black;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Graphing SVG Test</h1>
+
+
+
+        <script type="text/javascript" id="v0">
+          svg = new uSvgGraph({elementInfo:{width:400,height:400, style:'border:5px solid black;'}});
+
+          line1 = new uLine(2, -3);
+          svg.drawLinearFunction(line1, {style:{stroke:"#0000ff"}});
+          svg.labelLinearFunction(line1, {x:4, offset:new uPoint(0.5,0.5)});
+
+          p1 = new uPoint(4,-1);
+
+          line2 = svg.get_uLine_from_slope_and_point(2, p1);
+
+          linePerp = new uLine(-1/2, 1);
+          svg.drawLinearFunction(linePerp, {style:{stroke:"#00ff00"}});
+
+          p2 = linePerp.intersectWith(line1);
+          svg.drawPoint(p2);
+          svg.labelPoint(p2);
+          svg.labelPoint(p1);
+
+          d = p1.distanceTo(p2);
+          svg.addText(`d = ${d.toFixed(3)}`, new uPoint(6,-4));
+          
+
+        </script>
+
+
+
+  </body>
+
+</html>
