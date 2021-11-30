@@ -326,6 +326,30 @@ class uSvgGraph{
     return line;
   }
 
+  drawQuadratic(q = new uQuadratic(), {dx = 0.1, style = {}} = {}){
+    let defaultStyle = {
+      stroke:"#000", "stroke-width":"2", fill:'none', points:''
+    }
+    style = {...defaultStyle, ...style};
+
+    for (let x=this.xmin; x<=this.xmax; x+=dx){
+
+      let y = q.y(x);
+
+      if (y < this.ymax && y > this.ymin){
+        let p = new uPoint(x, y);
+        p = this.elemCoords(p);
+        style.points += `${p.x.toFixed(4)},${p.y.toFixed(4)} `;
+
+      }
+    }
+
+    let line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    this.setAttributes(line, style);
+    this.svg.appendChild(line);
+
+  }
+
 }
 
 
@@ -423,3 +447,12 @@ function get_uLine_from_slope_and_point(m = 1, pt = new uPoint(1,1)){
 //   let y = l1.m * x + l1.b;
 //   return new uPoint(x, y);
 // }
+
+class uQuadratic{
+  constructor(a=1, b=0, c=0){
+    this.a = a; this.b = b; this.c = c;
+  }
+  y(x){
+    return this.a * x**2 + this.b*x + this.c;
+  }
+}
