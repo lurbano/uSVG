@@ -332,21 +332,47 @@ class uSvgGraph{
     }
     style = {...defaultStyle, ...style};
 
+    let pts = [];
+
     for (let x=this.xmin; x<=this.xmax; x+=dx){
 
       let y = q.y(x);
 
       if (y < this.ymax && y > this.ymin){
-        let p = new uPoint(x, y);
-        p = this.elemCoords(p);
-        style.points += `${p.x.toFixed(4)},${p.y.toFixed(4)} `;
+        pts.push(new uPoint(x,y));
+        // let p = new uPoint(x, y);
+        // p = this.elemCoords(p);
+        // style.points += `${p.x.toFixed(4)},${p.y.toFixed(4)} `;
 
       }
+    }
+
+    q = this.addPolyline(pts, {style});
+    // let line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    // this.setAttributes(line, style);
+    // this.svg.appendChild(line);
+
+  }
+  addPolyline(pts=[new uPoint(0,0), new uPoint(2,3)], {style={}}={}){
+    // pts is an array of uPoints
+
+    let defaultStyle = {
+      fill:"none", stroke:"#000000",
+      "stroke-width": 2, points: ""
+    };
+    style = {...defaultStyle, ...style};
+
+
+    for (let n=0; n<pts.length; n++){
+      let p = this.elemCoords(pts[n]);
+      style.points += `${p.x.toFixed(4)},${p.y.toFixed(4)} `;
     }
 
     let line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
     this.setAttributes(line, style);
     this.svg.appendChild(line);
+
+    return line;
 
   }
 

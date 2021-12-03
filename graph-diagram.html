@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>SVG Test</title>
+
+    <script type="text/javascript" src="./uSvg.js"></script>
+
+    <style media="screen">
+      svg {
+        border: 1px solid black;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Graphing SVG Test</h1>
+
+
+
+        <script type="text/javascript" id="v0">
+          svg = new uSvgGraph({elementInfo:{width:400,height:400, style:'border:5px solid black;'}});
+
+          p1 = new uPoint(2,1);
+          p2 = new uPoint(6,1);
+          p3 = new uPoint(6, 4);
+          // s1 = svg.addLine(p1,p2);
+          // s2 = svg.addLine(p2,p3);
+          // s3 = svg.addLine(p3,p1);
+          poly1 = svg.addPolyline(pts=[p1, p2, p3, p1]);
+
+
+        </script>
+
+
+
+  </body>
+
+</html>
