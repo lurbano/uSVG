@@ -24,9 +24,6 @@ class uSvg{
     if (this.elementInfo.scale === 'auto') {
      this.elementInfo.scale = Math.max(this.elementInfo.height, this.elementInfo.width) / (2*this.axesInfo.xmax);
    }
-    //console.log(this.elementInfo.height);
-
-    //console.log(this.axesInfo.zero);
 
     this.setScale(this.elementInfo.scale);
 
@@ -78,8 +75,6 @@ class uSvg{
     line.setAttribute("y1", p1.y);
     line.setAttribute("x2", p2.x);
     line.setAttribute("y2", p2.y);
-    // line.setAttribute("stroke", stroke);
-    // line.setAttribute("stroke-width", stroke_width);
     this.setAttributes(line, style);
 
     this.svg.appendChild(line);
@@ -191,6 +186,7 @@ class uSvgGraph extends uSvg {
     this.elementInfo = elementInfo;
 
     let defaultAxesInfo = {
+      showAxes:true,
       zero: new uPoint(this.elementInfo.width/2, this.elementInfo.height/2),
       xmax: 10,
       ymax: 10,
@@ -218,14 +214,10 @@ class uSvgGraph extends uSvg {
     if (this.elementInfo.scale === 'auto') {
      this.elementInfo.scale = Math.max(this.elementInfo.height, this.elementInfo.width) / (2*this.axesInfo.xmax);
    }
-    //console.log(this.elementInfo.height);
-
-    //console.log(this.axesInfo.zero);
 
     this.setScale(this.elementInfo.scale);
 
-
-    this.drawAxes();
+    if (this.axesInfo.showAxes) {this.drawAxes();}
 
   }
 
@@ -414,17 +406,10 @@ class uSvgGraph extends uSvg {
 
       if (y < this.ymax && y > this.ymin){
         pts.push(new uPoint(x,y));
-        // let p = new uPoint(x, y);
-        // p = this.elemCoords(p);
-        // style.points += `${p.x.toFixed(4)},${p.y.toFixed(4)} `;
-
       }
     }
 
     q = this.addPolyline(pts, {style});
-    // let line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-    // this.setAttributes(line, style);
-    // this.svg.appendChild(line);
 
   }
 
