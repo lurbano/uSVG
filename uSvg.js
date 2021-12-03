@@ -15,7 +15,7 @@ class uSvg{
 
     this.divId = divId;
     let defaultAxesInfo = {
-      zero: new uPoint(this.elementInfo.width/2, this.elementInfo.height/2),
+      zero: new uPoint(0, this.elementInfo.height),
       xmax: 10,
       ymax: 10
     }
