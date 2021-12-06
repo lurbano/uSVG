@@ -513,6 +513,11 @@ class uPoint{
     let y = this.y + p.y;
     return new uPoint(x,y);
   }
+  addxy(x,y){
+    x = this.x + x;
+    y = this.y + y;
+    return new uPoint(x,y);
+  }
   asText({round=1}={}){
     if (round <= 1){
       let n = this.x.toFixed(1).toString();
