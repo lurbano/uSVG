@@ -23,8 +23,10 @@ class uSvg{
 
     if (this.elementInfo.scale === 'auto') {
      this.elementInfo.scale = Math.max(this.elementInfo.height, this.elementInfo.width) / (2*this.axesInfo.xmax);
-   }
+    }
 
+    this.namespaceURI = 'http://www.w3.org/2000/svg';
+    this.vectors = [];
     this.setScale(this.elementInfo.scale);
 
     this.elementInfo.id = this.createElement();
@@ -98,6 +100,67 @@ class uSvg{
 
     this.svg.appendChild(circ);
     return circ;
+  }
+
+  setArrowHeadMarker({markerStyle = {}, pathStyle={}} = {}){
+
+    let newMarker = isEmpty(markerStyle) ? false : true;
+
+    let defaultMarkerStyle = {
+      id:"arrow_", viewBox:"0 -5 10 10", refX:"5", refY:"0", markerWidth:"4", markerHeight:"4", orient:"auto"
+    };
+    markerStyle = {...defaultMarkerStyle, ...markerStyle};
+
+    let defaultPathStyle = {
+      d:"M0,-5L10,0L0,5", class:"arrowHead"
+    }
+    pathStyle = {...defaultPathStyle, ...pathStyle};
+
+    let arrowHeadPath = document.createElementNS(this.namespaceURI, "path");
+    this.setAttributes(arrowHeadPath, pathStyle);
+
+    let markerNum = 0;
+
+    // set default arrowhead if necessary (arrowHeads[0])
+    if (this.arrowHeads === undefined){ // set initial arrowhead
+      this.arrowHeads = [document.createElementNS(this.namespaceURI, "marker")];
+      markerStyle.id = "arrow_0";
+      this.setAttributes(this.arrowHeads[0], markerStyle);
+
+      this.arrowHeads[0].appendChild(arrowHeadPath);
+      this.svg.appendChild(this.arrowHeads[0]);
+    }
+
+    if (newMarker) { // add a new marker
+      this.arrowHeads.push(document.createElementNS(this.namespaceURI, "marker"));
+      markerNum = this.arrowHeads.length-1;
+      markerStyle.id = "arrow_"+markerNum;
+      this.setAttributes(this.arrowHeads[markerNum], markerStyle);
+      this.arrowHeads[markerNum].appendChild(arrowHeadPath);
+      this.svg.appendChild(this.arrowHeads[markerNum]);
+    }
+
+
+
+    return markerStyle.id;
+  }
+
+  addVector(v = new uVector(), {markerStyle = {}, style = {}} = {}){
+
+    let defaultStyle = {
+      stroke:"#0000ff", "stroke-width":"2"
+    };
+    style = {...defaultStyle, ...style};
+
+    let arrowHeadId = this.setArrowHeadMarker({markerStyle});
+
+    style["marker-end"] = `url(#${arrowHeadId})`;
+    let arrow = this.addLine(v.pos, v.endpt, {style});
+    //arrow.setAttribute("marker-end", `url(#${arrowHeadId})`);
+    this.vectors.push(arrow);
+
+
+
   }
 
   elemCoords(p){ //convert from graph coordinates to element coordinates
@@ -421,6 +484,14 @@ class uSvgGraph extends uSvg {
 
 
 
+function isEmpty(obj) {
+   for (var x in obj) { console.log(x); return false; }
+   return true;
+}
+
+
+
+
 
 
 
@@ -526,5 +597,12 @@ class uQuadratic{
   }
   y(x){
     return this.a * x**2 + this.b*x + this.c;
+  }
+}
+
+class uVector{
+  constructor(pos = new uPoint(), v = new uPoint(1,1)){
+    this.pos = pos; this.v = v;
+    this.endpt = this.pos.add(this.v);
   }
 }
