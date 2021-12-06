@@ -29,7 +29,11 @@
           // s3 = svg.addLine(p3,p1);
           poly1 = svg.addPolyline(pts=[p1, p2, p3, p1]);
 
-          v1 = svg.addVector();
+          a1 = svg.addArrow();
+
+          p4 = new uPoint(7,8);
+          v1 = new uVector(p4, new uPoint(-3,2));
+          a2 = svg.addArrow(v1);
 
         </script>
 

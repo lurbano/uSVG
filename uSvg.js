@@ -26,7 +26,7 @@ class uSvg{
     }
 
     this.namespaceURI = 'http://www.w3.org/2000/svg';
-    this.vectors = [];
+    this.arrows = [];
     this.setScale(this.elementInfo.scale);
 
     this.elementInfo.id = this.createElement();
@@ -107,7 +107,7 @@ class uSvg{
     let newMarker = isEmpty(markerStyle) ? false : true;
 
     let defaultMarkerStyle = {
-      id:"arrow_", viewBox:"0 -5 10 10", refX:"5", refY:"0", markerWidth:"4", markerHeight:"4", orient:"auto"
+      id:"arrow_0", viewBox:"0 -5 10 10", refX:"5", refY:"0", markerWidth:"4", markerHeight:"4", orient:"auto"
     };
     markerStyle = {...defaultMarkerStyle, ...markerStyle};
 
@@ -124,7 +124,7 @@ class uSvg{
     // set default arrowhead if necessary (arrowHeads[0])
     if (this.arrowHeads === undefined){ // set initial arrowhead
       this.arrowHeads = [document.createElementNS(this.namespaceURI, "marker")];
-      markerStyle.id = "arrow_0";
+      //markerStyle.id = "arrow_0";
       this.setAttributes(this.arrowHeads[0], markerStyle);
 
       this.arrowHeads[0].appendChild(arrowHeadPath);
@@ -145,7 +145,7 @@ class uSvg{
     return markerStyle.id;
   }
 
-  addVector(v = new uVector(), {markerStyle = {}, style = {}} = {}){
+  addArrow(v = new uVector(), {markerStyle = {}, style = {}} = {}){
 
     let defaultStyle = {
       stroke:"#0000ff", "stroke-width":"2"
@@ -157,7 +157,7 @@ class uSvg{
     style["marker-end"] = `url(#${arrowHeadId})`;
     let arrow = this.addLine(v.pos, v.endpt, {style});
     //arrow.setAttribute("marker-end", `url(#${arrowHeadId})`);
-    this.vectors.push(arrow);
+    this.arrows.push(arrow);
 
 
 
