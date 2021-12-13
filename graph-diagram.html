@@ -35,6 +35,30 @@
           v1 = new uVector(p4, new uPoint(-3,2));
           a2 = svg.addArrow(v1);
 
+          tri1 = svg.addRightTriangle({
+            pos: new uPoint(5,5),
+            a: 3,
+            b: 4,
+            style: {fill:"green"}
+          });
+          console.log("triangle sides:", tri1.a, tri1.b, tri1.c);
+
+          tri2 = svg.addRightTriangle({
+            pos: new uPoint(10,10),
+            a: 3,
+            b: 4,
+            flip: "vh",
+            style: {fill:"blue"}
+          });
+
+          tri3 = svg.addRightTriangle({
+            pos: new uPoint(10,10),
+            a: 3,
+            b: 4,
+            rotate: "30",
+            style: {fill:"red"}
+          });
+
         </script>
 
 
