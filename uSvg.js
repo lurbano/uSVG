@@ -256,6 +256,43 @@ class uSvg{
 
   }
 
+  addCylinder({pos= new uPoint(), r = 1, h = 1, rLabel = r, hLabel = h, style={}} = {}){
+
+    let defaultStyle = {
+      fill:"none", stroke:"#000000",
+      "stroke-width": 2, points: "",
+      //"transform-origin": `${p.x} ${p.y}`
+    };
+    style = {...defaultStyle, ...style};
+
+    let p1 = pos;
+    let p = this.elemCoords(p1);
+    this.addCircle(pos, {style:{
+      r: this.elemScale(r),
+      transform: "scale(1, 0.25)",
+      "transform-origin": `${p.x} ${p.y}`
+    }});
+
+    let p2 = pos.addxy(0,h);
+    p = this.elemCoords(p2);
+    this.addCircle(pos.addxy(0, h), {style:{
+      r: this.elemScale(r),
+      transform: "scale(1, 0.25)",
+      "transform-origin": `${p.x} ${p.y}`
+    }});
+
+    this.addLine(p1.addxy(r,0), p2.addxy(r,0), {style});
+    this.addLine(p1.addxy(-r,0), p2.addxy(-r,0), {style});
+
+    //radius
+    this.addLine(p1, p1.addxy(r,0), {style});
+    this.addText(rLabel, p1.addxy(r/2, 0.5));
+
+    //height
+    this.addText(hLabel, p1.addxy(r+0.5, h/2));
+
+  }
+
 }
 
 
