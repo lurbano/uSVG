@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>SVG Test</title>
+
+    <script type="text/javascript" src="./uSvg.js"></script>
+
+    <style media="screen">
+      svg {
+        border: 1px solid black;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Cylinder Diagram</h1>
+
+    <p>
+      v1 = <span class="" id="v1"></span><br>
+      m1 = <span class="" id="m1"></span>
+    </p>
+    <p>
+      v2 = <span class="" id="v2"></span><br>
+      m2 = <span class="" id="m2"></span>
+    </p>
+
+    <p>
+      v_after = <span class="" id="v_after"></span><br>
+      m_after = <span class="" id="m_after"></span>
+    </p>
+
+      </span>
+      <br>
+
+
+      <div class="uGraph">
+        <script type="text/javascript">
+
+          p1 = new uPoint(4,3);
+          p2 = new uPoint(16, 3);
+
+          m1 = 4; m2 = 6;
+          v1 = 5; v2 = -3;
+          vec1 = new uVector(p1, new uPoint(v1,0));
+          vec2 = new uVector(p2, new uPoint(v2,0));
+
+
+          svg = new uSvg({
+            elementInfo:{width:500,height:150}
+          });
+
+          svg.addCircle(p1, {style:{fill:'#f00', r: m1}});
+          svg.addArrow(vec1);
+          svg.addText(`v₁ = ${v1} m/s`, p1.addxy(0, 1));
+          svg.addText(`m₁ = ${m1} kg`, p1.addxy(0, -1.25));
+          svg.addCircle(p2, {style:{fill:'#0f0', r:m2}});
+          svg.addArrow(vec2);
+          svg.addText(`v₂ = ${v2} m/s`, p2.addxy(0, 1));
+          svg.addText(`m₂ = ${m2} kg`, p2.addxy(0, -1.25));
+
+          document.getElementById("v1").innerHTML = vec1.v.x;
+          document.getElementById("m1").innerHTML = m1;
+          document.getElementById("v2").innerHTML = vec2.v.x;
+          document.getElementById("m2").innerHTML = m2;
+
+        </script>
+      </div>
+
+
+
+      <div class="uGraph">
+        <script type="text/javascript">
+          svg = new uSvg({
+            elementInfo:{width:500,height:150}
+          });
+          p1 = new uPoint(9,3);
+
+          m_after = m1 + m2;
+          M_tot = m1*v1 + m2*v2;
+          v_after = M_tot/m_after;
+
+          v1 = new uVector(p1, new uPoint(-1,0));
+          //p2 = new uPoint(16, 3);
+          svg.addCircle(p1, {style:{fill:'#ff0', r:m_after}});
+          svg.addArrow(v1);
+          svg.addText("vₐ = ?", p1.addxy(0, 1));
+          //svg.addText(`mₐ = ${m_after} kg`, p1.addxy(0, -1.25));
+
+          document.getElementById("v_after").innerHTML = v_after;
+          document.getElementById("m_after").innerHTML = m_after;
+
+        </script>
+      </div>
+
+
+
+  </body>
+
+</html>
