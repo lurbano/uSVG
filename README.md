@@ -31,7 +31,6 @@ Base Methods:
 * `addCircle(p, {style})`
 
 
-
 ### `uPoint(x,y)`
 Creates an object to hold (x,y) coordinates to make them easier to work with.
 
