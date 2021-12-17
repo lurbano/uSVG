@@ -31,6 +31,7 @@ Base Methods:
 * `addCircle(p, {style})`
 
 
+
 ### `uPoint(x,y)`
 Creates an object to hold (x,y) coordinates to make them easier to work with.
 
@@ -47,4 +48,4 @@ Methods:
 * `intersectWith(line = new uLine())`: returns the point of intersection (as a uPoint) between this line and the passed line.
 
 Helper Functions:
-* `get_uLine_from_two_points(p1, p2)`: returns the `uLine` from the given two points. 
+* `get_uLine_from_two_points(p1, p2)`: returns the `uLine` from the given two points.
