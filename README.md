@@ -1,7 +1,7 @@
 # uSVG
 Classes for creating svg images using vanilla Javascript.
 
-## Classes
+## Classes 
 
 ### `uSvg`
 General class for svg's
