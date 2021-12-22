@@ -93,6 +93,73 @@
         </script>
 
 
+        <script type="text/javascript" id="v5">
+          svg = new uSvg({elementInfo:{width:300,height:300, style:'border:5px solid black;'}});
+          p1 = new uPoint(1,2);
+          p2 = new uPoint(8,7);
+
+          p3 = new uPoint(1,6);
+          p4 = new uPoint(7,2);
+          svg.addLine(p1, p2, {style:{"stroke-width":2}});
+          svg.addLine(p3, p4, {style:{"stroke-width":2}});
+
+          pInt = new uPoint(4,5);
+          svg.addText('2x+1', pInt, {style:{'font-size': '10px'}});
+          pInt = new uPoint(6,4);
+          svg.addText('3x+4', pInt, {style:{'font-size': '10px'}});
+
+          // p5 = new uPoint(4,19);
+          // p6 = new uPoint(10,2);
+          // svg.addLine(p5, p6, {style:{"stroke-width":2}});
+          //
+          // p7 = new uPoint(10,19);
+          // p8 = new uPoint(16,2);
+          // svg.addLine(p7, p8, {style:{"stroke-width":2}});
+
+
+        </script>
+
+
+        <script type="text/javascript" id="v5">
+          svg = new uSvgGraph({elementInfo:{width:300,height:300, style:'border:5px solid black;'}});
+          p1 = new uPoint(1,2);
+          p2 = new uPoint(8,7);
+
+          p3 = new uPoint(1,6);
+          p4 = new uPoint(7,2);
+
+          svg.addPolyline([p1,p2,p3,p1], {style:{"stroke-width":2}});
+
+
+        </script>
+
+        <script type="text/javascript" id="v5">
+          svg = new uSvgGraph({elementInfo:{width:300,height:300, style:'border:5px solid black;'}});
+          p1 = new uPoint(2,5);
+          p2 = new uPoint(-5,2);
+
+          p3 = new uPoint(-2,-5);
+          p4 = new uPoint(7,2);
+
+          svg.addPolyline([p1,p2,p3,p1], {style:{"stroke-width":2}});
+
+
+        </script>
+
+        <script type="text/javascript" id="v5">
+          svg = new uSvg({elementInfo:{width:300,height:300, style:'border:5px solid black;'}});
+          p1 = new uPoint(1, 1);
+          p2 = new uPoint(8, 3);
+
+          p3 = new uPoint(5,5);
+          p4 = new uPoint(7,2);
+
+          svg.addPolyline([p1,p2,p3,p1], {style:{"stroke-width":2}});
+
+
+        </script>
+
+
   </body>
 
 </html>
