@@ -19,23 +19,19 @@
 
 
         <script type="text/javascript" id="v0">
-          svg = new uSvgGraph({elementInfo:{width:300,height:300, style:'border:5px solid black;'}});
-          console.log("adding Line")
-          line1 = new uLine(-2, -1);
-          console.log("line1:", line1.eqnAsText());
-          svg.drawLinearFunction(line1, {style:{stroke:"#0000ff"}});
-          p1 = new uPoint(-5,-1);
-          p2 = new uPoint(6,5);
-          svg.drawPoints([p1, p2], r=0.1);
-          line2 = svg.get_uLine_from_two_points(new uPoint(3,6), new uPoint(-4,-9));
-          pIntersect = svg.get_intersection_of_two_uLines(line1, line2);
-          console.log(pIntersect);
-          svg.labelPoint(p2);
-          svg.labelLinearFunction(line1, {x:4, offset:new uPoint(0.5,0.5)});
+          svg = new uSvg({elementInfo:{width:300,height:300, style:'border:5px solid black;'}});
+          p = new uPoint(1,1);
+          c = svg.addCircle(p);
 
+          // function moveCircle(){
+          //   p = p.addxy(0.2,0);
+          //   c.setAttribute("cx", p.x);
+          // }
 
-          console.log(line1.perpSlope());
-          linePerp = svg.get_uLine_from_slope_and_point(line1.perpSlope(), p2);
+          svg.setMove(c, new uVec(1,2));
+
+         svg.animate(10);
+          //nInterval = setInterval(moveCircle, 10);
 
 
         </script>

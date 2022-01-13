@@ -9,7 +9,8 @@ class uSvg{
       width: 400,
       height: 400,
       id:undefined,
-      scale:"auto"
+      scale:"auto",
+      dt: 10    //in milliseconds for animation
     }
     this.elementInfo = {...defaultElementInfo, ...elementInfo};
 
@@ -24,6 +25,9 @@ class uSvg{
     if (this.elementInfo.scale === 'auto') {
      this.elementInfo.scale = Math.max(this.elementInfo.height, this.elementInfo.width) / (2*this.axesInfo.xmax);
     }
+
+    this.dt = this.elementInfo.dt;
+    this.movements = [];  // element, uVec
 
     this.namespaceURI = 'http://www.w3.org/2000/svg';
     this.arrows = [];
@@ -42,7 +46,7 @@ class uSvg{
     this.scale = scale;
   }
 
-  addText(txt, p, {style = {}} = {}){
+  addText(txt, p=new uPoint(), {style = {}} = {}){
     let defaultStyle = {
       //"font-size": "10px",
       "text-anchor": "middle"
@@ -100,6 +104,78 @@ class uSvg{
 
     this.svg.appendChild(circ);
     return circ;
+  }
+
+  addArcToVertex({r = 1, vertex = [new uPoint(1,0), new uPoint(0,0), new uPoint(0,1)],
+    angle_label = "θ", angle_label_f = 0.25,
+    style={}} = {}){
+
+    let defaultStyle = {
+      r:4, fill:"none", stroke:"#000000",
+      "stroke-width": 1
+    };
+    style = {...defaultStyle, ...style};
+
+    let arc = document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+    let v = new uVertex(vertex);
+    let [s1, s2] = v.getArcPoints(r);
+
+    let p1 = vertex[0]
+    let c = vertex[1];
+    let p2 = vertex[2];
+
+
+    // convert to graph coordinates
+    let cg = this.elemCoords(c);
+    let s1g = this.elemCoords(s1);
+    let s2g = this.elemCoords(s2);
+
+    let rg = this.elemScale(r);
+
+    style.d = `M ${s1g.x} ${s1g.y} `;
+    style.d += `A ${rg} ${rg} 0 0 0 ${s2g.x} ${s2g.y}`;
+
+    this.setAttributes(arc, style);
+    this.svg.appendChild(arc);
+
+    //add label
+    let f = angle_label_f;
+    if (angle_label !== ""){
+      let mx = 0.5*s1.x + 0.5*s2.x;
+      mx = f*c.x + (1-f)*mx;
+      let my = 0.5*s1.y + 0.5*s2.y;
+      my = f*c.y + (1-f)* my;
+      let mp = new uPoint(mx, my);
+
+      this.addText(angle_label, mp, {style:{"dominant-baseline":"central"}});
+    }
+
+    //arc.vertices = [s1, c, s2];
+
+    return arc;
+
+  }
+
+
+  setMove(element, v = new uPoint(1,1)){
+    console.log(element.tagName === 'circle', v);
+
+    let id = this.movements.length;
+    let m = new svgMovement({
+      element: element,
+      v: v,
+      id: id
+    });
+    this.movements.push(m);
+    console.log(m);
+    return id;
+  }
+
+  animate(dt){
+    for (let i=0; i<this.movements.length; i++){
+      this.movements[i].animate(dt);
+    }
   }
 
   setArrowHeadMarker({markerStyle = {}, pathStyle={}} = {}){
@@ -220,7 +296,13 @@ class uSvg{
 
   }
 
-  addRightTriangle({pos = new uPoint(), a = 1, b = 1, flip = "", rotate = 0, style={}} = {}){
+  addRightTriangle({pos = new uPoint(), a = 1, b = 1, flip = "", rotate = 0,
+    arc_r = 2,
+    show_A_angle=true,
+    show_B_angle=true,
+    A_angle_label="α",
+    B_angle_label="β",
+    style={}} = {}){
     //a is the vertical side length
     //rotate is counterclockwise
     // flip can be vertical ("v"), horizontal ("h"), or both ("vh")
@@ -252,6 +334,23 @@ class uSvg{
 
     let tri = new uRightTriangle(a, b);
     tri.line = line;
+    tri.vertices = [p1, p2, p3];
+
+    if (show_A_angle){
+      let arcA = this.addArcToVertex({
+        r: arc_r,
+        vertex: [p1, p2, p3],
+        angle_label: A_angle_label
+      })
+    }
+    if (show_B_angle){
+      let arcB = this.addArcToVertex({
+        r: arc_r,
+        vertex: [p2, p3, p1],
+        angle_label: B_angle_label
+      })
+    }
+
     return tri;
 
   }
@@ -565,8 +664,42 @@ function isEmpty(obj) {
 }
 
 
+function moveCircle({c=null, v=new uVec(), dt = 10}){
 
+  x = parseFloat(c.getAttribute("cx"));
+  y = parseFloat(c.getAttribute("cy"));
+  x += v.x * dt / 1000;
+  y += v.y * dt / 1000;
+  c.setAttribute("cx", x);
+  c.setAttribute("cy", y);
+  //console.log(x,y);
+}
 
+class svgMovement{
+  constructor({
+    element = null,
+    v = new uVec(),
+    id = null,
+    intervalId = null
+  } = {}){
+    this.element = element;
+    this.v = v;
+    this.id = id;
+    this.intervalId = intervalId;
+  }
+  animate(dt = 1000){
+    if (this.element.tagName === 'circle'){
+      this.intervalId = setInterval(moveCircle, dt, {
+        c: this.element,
+        v: this.v,
+        dt: this.dt
+      });
+    }
+    //
+    console.log("interval set:", this.intervalId);
+  }
+
+}
 
 
 
@@ -593,6 +726,14 @@ class uPoint{
     y = this.y + y;
     return new uPoint(x,y);
   }
+  move(p = new uPoint()){
+    this.x += p.x;
+    this.y += p.y;
+  }
+  movexy(x,y){
+    this.x += x;
+    this.y += y;
+  }
   asText({round=1}={}){
     if (round <= 1){
       let n = this.x.toFixed(1).toString();
@@ -600,6 +741,12 @@ class uPoint{
       if (tenth == 0) {round = 0;}
     }
     return `(${this.x.toFixed(round)}, ${this.y.toFixed(round)})`;
+  }
+}
+
+class uVec extends uPoint {
+  constructor(x=0, y=0) {
+    super(x, y);
   }
 }
 
@@ -611,11 +758,14 @@ class uLine{
     this.vertical = isFinite(m) ? false : true;
   }
   y(x){
-    let y = this.m * x + this.b;
+    let y = this.vertical ? undefined : this.m * x + this.b;
     //console.log(x, y);
     return y;
   }
-  x(y){ return (y - this.b) / this.m; }
+  x(y){
+    let x = this.vertical ? undefined : (y - this.b) / this.m;
+    return x;
+  }
 
   perpSlope(){
     let mp = -(1/this.slope);
@@ -692,4 +842,51 @@ class uRightTriangle{
     this.a = a; this.b = b;
     this.c = (a**2 + b**2)**0.5;
   }
+  angle_a(deg=false){
+    let a = Math.asin(this.b/this.c);
+    if (deg){a = a * 180/Math.PI;}
+    return a;
+  }
+  angle_b(deg=false){
+    let b = Math.asin(this.a/this.c);
+    if (deg){b = b * 180/Math.PI;}
+    return b;
+  }
+}
+
+class uVertex{
+  constructor(vertex = [new uPoint(1,0), new uPoint(0,0), new uPoint(0,1)]){
+    this.vertex = vertex;
+    this.p1 = vertex[0];
+    this.center = vertex[1];
+    this.p2 = vertex[2];
+  }
+  getArcPoints(r=1){
+    let p1 = this.p1;
+    let c = this.center;
+    let p2 = this.p2;
+
+    // do first arm
+    let dx = p1.x - c.x;
+    let dy = p1.y - c.y;
+    let m = (dx**2 + dy**2)**0.5;
+    let dxp = dx * r/m;
+    let dyp = dy * r/m;
+    let s1 = c.addxy(dxp, dyp);
+
+    // do second arm
+    dx = p2.x - c.x;
+    dy = p2.y - c.y;
+    m = (dx**2 + dy**2)**0.5;
+    dxp = dx * r/m;
+    dyp = dy * r/m;
+    let s2 = c.addxy(dxp, dyp);
+
+    return [s1, s2];
+
+  }
+  getAngle(deg=true){
+
+  }
+
 }
