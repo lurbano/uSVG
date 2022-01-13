@@ -788,6 +788,14 @@ class uPoint{
     }
     return `(${this.x.toFixed(round)}, ${this.y.toFixed(round)})`;
   }
+  rotate(angle=0){ //rotate about the origin
+    angle = angle * Math.PI / 180;
+    let c = Math.cos(angle);
+    let s = Math.sin(angle);
+    let x = this.x * c - this.y * s;
+    let y = this.y * c - this.x * s;
+    return new uPoint(x,y);
+  }
 }
 
 class uVec extends uPoint {
@@ -887,6 +895,11 @@ class uRightTriangle{
   constructor(a, b){
     this.a = a; this.b = b;
     this.c = (a**2 + b**2)**0.5;
+
+    //local coordinates of triangle
+    this.C = new uPoint();
+    this.A = this.C.addxy(this.a, 0);
+    this.B = this.C.addxy(0, this.b);
   }
   angle_a(deg=false){
     let a = Math.asin(this.b/this.c);
@@ -897,6 +910,11 @@ class uRightTriangle{
     let b = Math.asin(this.a/this.c);
     if (deg){b = b * 180/Math.PI;}
     return b;
+  }
+  rotate(angle=90){ //all in local coordinates
+    this.A = this.A.rotate(angle);
+    this.B = this.B.rotate(angle);
+
   }
 }
 
