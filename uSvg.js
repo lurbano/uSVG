@@ -106,8 +106,10 @@ class uSvg{
     return circ;
   }
 
-  addArcToVertex({r = 1, vertex = [new uPoint(1,0), new uPoint(0,0), new uPoint(0,1)],
-    angle_label = "θ", angle_label_f = 0.25,
+  addArcToVertex({r = 1,
+    vertex = [new uPoint(1,0), new uPoint(0,0), new uPoint(0,1)],
+    angle_label = "angle", angle_label_f = 0.25, angle_label_rounding = 1,
+    angleLabelStyle = {},
     style={}} = {}){
 
     let defaultStyle = {
@@ -116,14 +118,21 @@ class uSvg{
     };
     style = {...defaultStyle, ...style};
 
+    let defaultAngleLabelStyle = {
+      "text-anchor": "middle",
+      "dominant-baseline":"central",
+      'font-style': 'italic'
+    };
+    angleLabelStyle = {...defaultAngleLabelStyle, ...angleLabelStyle};
+
     let arc = document.createElementNS("http://www.w3.org/2000/svg", "path");
 
     let v = new uVertex(vertex);
     let [s1, s2] = v.getArcPoints(r);
 
-    let p1 = vertex[0]
-    let c = vertex[1];
-    let p2 = vertex[2];
+    let p1 = v.p1;
+    let c = v.center;
+    let p2 = v.p2;
 
 
     // convert to graph coordinates
@@ -148,7 +157,14 @@ class uSvg{
       my = f*c.y + (1-f)* my;
       let mp = new uPoint(mx, my);
 
-      this.addText(angle_label, mp, {style:{"dominant-baseline":"central"}});
+      if (angle_label === 'angle'){
+        angle_label = v.getAngle().toFixed(angle_label_rounding) + '°';
+      }
+      else if (angle_label === 'theta') { angle_label = 'θ'}
+      else if (angle_label === 'alpha') { angle_label = 'α'}
+      else if (angle_label === 'beta') { angle_label = 'β'}
+
+      this.addText(angle_label, mp, {style: angleLabelStyle});
     }
 
     //arc.vertices = [s1, c, s2];
@@ -300,8 +316,18 @@ class uSvg{
     arc_r = 2,
     show_A_angle=true,
     show_B_angle=true,
-    A_angle_label="α",
-    B_angle_label="β",
+    A_angle_label= 'angle', // "α",
+    B_angle_label= 'angle', // "β",
+    angleLabelStyle = {},
+    show_a_side = true,
+    show_b_side = true,
+    show_c_side = true,  //hypothenuse
+    a_side_offset = 0.5,
+    b_side_offset = 0.5,
+    c_side_offset = 0.5,
+    a_side_label = "length",
+    b_side_label = "length",
+    sideLabelStyle = {},
     style={}} = {}){
     //a is the vertical side length
     //rotate is counterclockwise
@@ -315,6 +341,20 @@ class uSvg{
       //"transform-origin": `${p.x} ${p.y}`
     };
     style = {...defaultStyle, ...style};
+
+    let defaultAngleLabelStyle = {
+      "text-anchor": "middle",
+      "dominant-baseline":"central",
+      "font-size": '0.75em'
+    };
+    angleLabelStyle = {...defaultAngleLabelStyle, ...angleLabelStyle};
+
+    let defaultSideLabelStyle = {
+      "text-anchor": "middle",
+      "dominant-baseline":"central",
+      "font-size": '0.75em'
+    };
+    sideLabelStyle = {...defaultSideLabelStyle, ...sideLabelStyle};
 
     //flip vertically or horizontally
     a = /v/.test(flip) ? -a : a;
@@ -340,15 +380,21 @@ class uSvg{
       let arcA = this.addArcToVertex({
         r: arc_r,
         vertex: [p1, p2, p3],
-        angle_label: A_angle_label
+        angle_label: A_angle_label,
+        angleLabelStyle: angleLabelStyle
       })
     }
     if (show_B_angle){
       let arcB = this.addArcToVertex({
         r: arc_r,
         vertex: [p2, p3, p1],
-        angle_label: B_angle_label
+        angle_label: B_angle_label,
+        angleLabelStyle: angleLabelStyle
       })
+    }
+
+    if (show_a_side){
+      //this.labelLineSegment(p1, p2, "a");
     }
 
     return tri;
@@ -862,6 +908,9 @@ class uVertex{
     this.p2 = vertex[2];
   }
   getArcPoints(r=1){
+    // get coordinates of the points along the arms
+    //   of the vertex that are r units away from the
+    //   vertex.
     let p1 = this.p1;
     let c = this.center;
     let p2 = this.p2;
@@ -886,7 +935,11 @@ class uVertex{
 
   }
   getAngle(deg=true){
-
+    let a1 = Math.atan2(this.p1.y - this.center.y, this.p1.x - this.center.x);
+    let a2 = Math.atan2(this.p2.y - this.center.y, this.p2.x - this.center.x);
+    let a = a2 - a1;
+    a = deg ? a * 180 / Math.PI : a;
+    return a;
   }
 
 }
