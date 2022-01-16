@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>SVG Test</title>
+
+    <script type="text/javascript" src="./uSvg.js"></script>
+
+    <style media="screen">
+      svg {
+        border: 1px solid black;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Cylinder Diagram</h1>
+
+      Area = <span class="" id="volume">
+
+      </span><br>
+      Volume = <span class="" id="area">
+
+      </span>
+      <br>
+
+        <script type="text/javascript" id="v0">
+          svg = new uSvgGraph({elementInfo:{width:400,height:400}, axesInfo:{showAxes:false}});
+
+          p1 = new uPoint(-7, -7);
+          tri = svg.addRightTriangle({
+            pos:p1,
+            a:6, b:9,
+            arc_r: 2.5,
+          });
+
+          p2 = new uPoint(1, 1);
+          tri2 = svg.addRightTriangle({
+            pos:p2,
+            a:6, b:8,
+            arc_r: 2.5,
+          });
+
+          tri3 = svg.addRightTriangle({
+            pos:p2,
+            a:6, b:8,
+            arc_r: 2.5,
+            rotate: 90
+          });
+
+          console.log("angles:", tri.a, tri.b/tri.c, tri.angle_a(true), tri.angle_b(true));
+
+          svg.drawPoint(new uPoint());
+
+          //console.log(tri.vertices);
+          // arc = svg.addArcToVertex({r:2, vertex:tri.vertices});
+          //
+          // console.log("arc.vertices", arc.vertices);
+          console.log("done");
+
+        </script>
+
+
+
+  </body>
+
+</html>

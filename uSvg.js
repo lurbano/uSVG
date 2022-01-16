@@ -312,7 +312,9 @@ class uSvg{
 
   }
 
-  addRightTriangle({pos = new uPoint(), a = 1, b = 1, flip = "", rotate = 0,
+  addRightTriangle({pos = new uPoint(), a = 1, b = 1,
+    flip = "",
+    rotate = 0, //degrees
     arc_r = 2,
     show_A_angle=true,
     show_B_angle=true,
@@ -333,7 +335,6 @@ class uSvg{
     //rotate is counterclockwise
     // flip can be vertical ("v"), horizontal ("h"), or both ("vh")
 
-    let p = this.elemCoords(pos);
 
     let defaultStyle = {
       fill:"none", stroke:"#000000",
@@ -360,6 +361,7 @@ class uSvg{
     a = /v/.test(flip) ? -a : a;
     b = /h/.test(flip) ? -b : b;
 
+    let p = this.elemCoords(pos);
     if (rotate != 0){
       let t = `rotate(${-rotate}, ${p.x}, ${p.y})`;
       style.transform = style.transform === undefined ? t : `${t} ${style.transform}`;
@@ -369,12 +371,13 @@ class uSvg{
     let p2 = pos.addxy(0, a);
     let p3 = pos.addxy(b, 0);
 
+    // draw triangle
     let pts = [p1, p2, p3, p1];
     let line = this.addPolyline(pts, {style});
 
     let tri = new uRightTriangle(a, b);
     tri.line = line;
-    tri.vertices = [p1, p2, p3];
+    //tri.vertices = [p1, p2, p3];
 
     if (show_A_angle){
       let arcA = this.addArcToVertex({
@@ -898,8 +901,11 @@ class uRightTriangle{
 
     //local coordinates of triangle
     this.C = new uPoint();
-    this.A = this.C.addxy(this.a, 0);
-    this.B = this.C.addxy(0, this.b);
+    this.A = this.C.addxy(0, this.a);
+    this.B = this.C.addxy( this.b, 0);
+    this.vertexC = [this.A, this.C, this.B];
+    this.vertexA = [this.C, this.A, this.B];
+    this.vertexB = [this.C, this.B, this.A];
   }
   angle_a(deg=false){
     let a = Math.asin(this.b/this.c);
