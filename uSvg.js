@@ -324,11 +324,12 @@ class uSvg{
     show_a_side = true,
     show_b_side = true,
     show_c_side = true,  //hypothenuse
-    a_side_offset = 0.5,
-    b_side_offset = 0.5,
-    c_side_offset = 0.5,
-    a_side_label = "length",
-    b_side_label = "length",
+    a_side_offset = new uPoint(-.5,0),
+    b_side_offset = new uPoint(0,-.5),
+    c_side_offset = new uPoint(.5, 0.5),
+    a_side_label = "a",
+    b_side_label = "b",
+    c_side_label = "c",
     sideLabelStyle = {},
     style={}} = {}){
     //a is the vertical side length
@@ -353,7 +354,7 @@ class uSvg{
     let defaultSideLabelStyle = {
       "text-anchor": "middle",
       "dominant-baseline":"central",
-      "font-size": '0.75em'
+      //"font-size": '0.75em'
     };
     sideLabelStyle = {...defaultSideLabelStyle, ...sideLabelStyle};
 
@@ -397,11 +398,26 @@ class uSvg{
     }
 
     if (show_a_side){
-      //this.labelLineSegment(p1, p2, "a");
+      this.labelLineSegment(p1, p2, a_side_label, a_side_offset, {style:sideLabelStyle});
+    }
+    if (show_b_side){
+      this.labelLineSegment(p1, p3, b_side_label, b_side_offset, {style:sideLabelStyle});
+    }
+    if (show_c_side){
+      this.labelLineSegment(p2, p3, c_side_label, c_side_offset, {style:sideLabelStyle});
     }
 
     return tri;
 
+  }
+
+  labelLineSegment(p1 = new uPoint(), p2 = new uPoint(1,0),
+                   label="L",
+                   offset = new uPoint(0, 1),
+                   {style={}}={}
+                  ){
+
+    this.addText(label, p1.midpoint(p2).add(offset), {style:style});
   }
 
   addCylinder({pos= new uPoint(), r = 1, h = 1, rLabel = r, hLabel = h, style={}} = {}){
@@ -790,6 +806,11 @@ class uPoint{
       if (tenth == 0) {round = 0;}
     }
     return `(${this.x.toFixed(round)}, ${this.y.toFixed(round)})`;
+  }
+  midpoint(p = new uPoint(), weight=0.5){
+    let x = weight * this.x + (1-weight)*p.x;
+    let y = weight * this.y + (1-weight)*p.y;
+    return new uPoint(x,y);
   }
   rotate(angle=0){ //rotate about the origin
     angle = angle * Math.PI / 180;
