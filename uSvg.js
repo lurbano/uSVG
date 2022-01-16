@@ -421,7 +421,12 @@ class uSvg{
                    } = {}
                   ){
 
-    label = label === "use_length" ? p1.distanceTo(p2).toFixed(label_rounding) : label;
+    //label = label === "use_length" ? p1.distanceTo(p2).toFixed(label_rounding) : label;
+    if (label === 'use_length'){
+      let n = p1.distanceTo(p2).toFixed(label_rounding);
+      label = n%1 ? n : Math.round(n) ;
+    }
+
     this.addText(label, p1.midpoint(p2).add(offset), {style:style});
 
   }
