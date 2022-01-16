@@ -108,7 +108,7 @@ class uSvg{
 
   addArcToVertex({r = 1,
     vertex = [new uPoint(1,0), new uPoint(0,0), new uPoint(0,1)],
-    angle_label = "angle", angle_label_f = 0.25, angle_label_rounding = 1,
+    angle_label = "use_angle", angle_label_f = 0.25, angle_label_rounding = 1,
     angleLabelStyle = {},
     style={}} = {}){
 
@@ -157,7 +157,7 @@ class uSvg{
       my = f*c.y + (1-f)* my;
       let mp = new uPoint(mx, my);
 
-      if (angle_label === 'angle'){
+      if (angle_label === 'use_angle'){
         angle_label = v.getAngle().toFixed(angle_label_rounding) + '°';
       }
       else if (angle_label === 'theta') { angle_label = 'θ'}
@@ -318,8 +318,8 @@ class uSvg{
     arc_r = 2,
     show_A_angle=true,
     show_B_angle=true,
-    A_angle_label= 'angle', // "α",
-    B_angle_label= 'angle', // "β",
+    A_angle_label= 'use_angle', // "α",
+    B_angle_label= 'use_angle', // "β",
     angleLabelStyle = {},
     show_a_side = true,
     show_b_side = true,
@@ -327,9 +327,9 @@ class uSvg{
     a_side_offset = new uPoint(-.5,0),
     b_side_offset = new uPoint(0,-.5),
     c_side_offset = new uPoint(.5, 0.5),
-    a_side_label = "a",
-    b_side_label = "b",
-    c_side_label = "c",
+    a_side_label = "use_length",
+    b_side_label = "use_length",
+    c_side_label = "use_length",
     sideLabelStyle = {},
     style={}} = {}){
     //a is the vertical side length
@@ -398,9 +398,11 @@ class uSvg{
     }
 
     if (show_a_side){
+      a_side_label = (a_side_label === 'use_length') ? a : a_side_label;
       this.labelLineSegment(p1, p2, a_side_label, a_side_offset, {style:sideLabelStyle});
     }
     if (show_b_side){
+      b_side_label = (b_side_label === 'use_length') ? b : b_side_label;
       this.labelLineSegment(p1, p3, b_side_label, b_side_offset, {style:sideLabelStyle});
     }
     if (show_c_side){
@@ -412,12 +414,16 @@ class uSvg{
   }
 
   labelLineSegment(p1 = new uPoint(), p2 = new uPoint(1,0),
-                   label="L",
+                   label="use_length",
                    offset = new uPoint(0, 1),
-                   {style={}}={}
+                   { label_rounding = 1,
+                     style={}
+                   } = {}
                   ){
 
+    label = label === "use_length" ? p1.distanceTo(p2).toFixed(label_rounding) : label;
     this.addText(label, p1.midpoint(p2).add(offset), {style:style});
+
   }
 
   addCylinder({pos= new uPoint(), r = 1, h = 1, rLabel = r, hLabel = h, style={}} = {}){
