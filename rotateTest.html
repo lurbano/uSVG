@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>SVG Test</title>
+
+    <script type="text/javascript" src="./uSvg-0.2.js"></script>
+
+    <style media="screen">
+      svg {
+        border: 1px solid black;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Triangle class test</h1>
+
+      <br>
+
+        <script type="text/javascript" id="v0">
+          svg = new uSvgGraph({elementInfo:{width:400,height:400}, axesInfo:{showAxes:false}});
+
+          p1 = new uPoint();
+          p2 = new uPoint(5,0);
+
+          svg.addLine(p1, p2);
+
+          svg.drawPoints([p1, p2]);
+
+
+
+          p = new uPoint(5,0);
+          for (let i=0; i<12; i++){
+            p = p.rotate(30);
+            svg.addLine(p1, p);
+          }
+
+          //console.log(tri.vertices);
+          // arc = svg.addArcToVertex({r:2, vertex:tri.vertices});
+          //
+          // console.log("arc.vertices", arc.vertices);
+          console.log("done");
+
+        </script>
+
+
+
+  </body>
+
+</html>

@@ -34,21 +34,16 @@
             arc_r: 2.5,
           });
 
-          p2 = new uPoint(1, 1);
-          tri2 = svg.addRightTriangle({
-            pos:p2,
-            a:6, b:8,
-            arc_r: 2.5,
-          });
+          tri = new uRightTriangle2(6, 9);
 
-          tri3 = svg.addRightTriangle({
-            pos:p2,
-            a:6, b:8,
-            arc_r: 2.5,
-            rotate: 90
-          });
-
-          console.log("angles:", tri.a, tri.b/tri.c, tri.angle_a(true), tri.angle_b(true));
+          tri.draw(
+            svg,
+            {
+              show_angles: [true, true, true],
+              angle_arc_r: [1, 2, 3],
+              fontStyle: {'font-size': '0.6em'}
+            }
+          );
 
           svg.drawPoint(new uPoint());
 

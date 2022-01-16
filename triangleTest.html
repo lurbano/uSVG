@@ -14,41 +14,25 @@
 
   </head>
   <body>
-    <h1>Cylinder Diagram</h1>
+    <h1>Triangle class test</h1>
 
-      Area = <span class="" id="volume">
-
-      </span><br>
-      Volume = <span class="" id="area">
-
-      </span>
       <br>
 
         <script type="text/javascript" id="v0">
           svg = new uSvgGraph({elementInfo:{width:400,height:400}, axesInfo:{showAxes:false}});
 
-          p1 = new uPoint(-7, -7);
-          tri = svg.addRightTriangle({
-            pos:p1,
-            a:6, b:9,
-            arc_r: 2.5,
-          });
-
-          p2 = new uPoint(1, 1);
-          tri2 = svg.addRightTriangle({
-            pos:p2,
-            a:6, b:8,
-            arc_r: 2.5,
-          });
-
-          tri3 = svg.addRightTriangle({
-            pos:p2,
-            a:6, b:8,
-            arc_r: 2.5,
-            rotate: 90
-          });
-
-          console.log("angles:", tri.a, tri.b/tri.c, tri.angle_a(true), tri.angle_b(true));
+          pt1 = new uPoint(-5, -8);
+          pt2 = new uPoint(-1, 5);
+          pt3 = new uPoint(6, -2);
+          tri = new uTriangle(pt1, pt2, pt3);
+          tri.draw(
+            svg,
+            {
+              show_angles: [true, true, true],
+              angle_arc_r: [4, 3.5, 3],
+              fontStyle: {'font-size': '0.75em'}
+            }
+          );
 
           svg.drawPoint(new uPoint());
 
