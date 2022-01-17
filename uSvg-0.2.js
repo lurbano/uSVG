@@ -1337,6 +1337,7 @@ class uTriangle{
         {
           showAngleLabels = [false, false, false],
           angleLabels = ["use_angle", "use_angle", "use_angle"],
+          angleLabelRounding = [0, 0, 0],
           showAngleArcs = [false, false, false],
           angle_arc_r = [3, 3, 3],
           angleFontStyle = {},
@@ -1405,6 +1406,7 @@ class uTriangle{
           arc_r: angle_arc_r[i],
           vertex: this.vertices[i],
           angle_label: angleLabels[i],
+          angle_label_rounding: angleLabelRounding[i],
           style: angleFontStyle
         });
         this.labels.push(label);
