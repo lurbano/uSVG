@@ -1287,6 +1287,8 @@ class uTriangle{
               p2 = new uPoint(0,1)
             ){
     this.setPoints(p0, p1, p2);
+    this.setVertices();
+    this.setLineSegments();
   }
 
   setPoints(p0 = new uPoint(),
@@ -1462,7 +1464,7 @@ class uRightTriangle extends uTriangle{
 
     this.a = a;
     this.b = b;
-    this.c = (a**2 + b**2)**0.5;
+    this.c = this.h = (a**2 + b**2)**0.5;
     this.pos = pos;
 
     //local coordinates of triangle
