@@ -1303,6 +1303,7 @@ class uTriangle{
     this.v1 = new uVertex([this.p0, this.p1, this.p2]);
     this.v2 = new uVertex([this.p1, this.p2, this.p0]);
     this.vertices = [this.v0, this.v1, this.v2];
+    this.angles = [this.v0.getAngle(), this.v1.getAngle(), this.v2.getAngle()];
   }
 
   setLineSegments(){
