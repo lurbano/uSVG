@@ -1338,7 +1338,7 @@ class uTriangle{
           showAngleArcs = [false, false, false],
           angle_arc_r = [3, 3, 3],
           angleFontStyle = {},
-          labelSides = {},
+          labelSides = [false, false, false],
           sideLabels = ["use_length", "use_length", "use_length"],
           sideLabelOffset = [1, 1, 1],
           sideLabelRounding = [1, 1, 1],
@@ -1413,17 +1413,19 @@ class uTriangle{
     this.setLineSegments();
     this.sideLabels = [];
     for (let i=0; i < labelSides.length; i++){
-      let sLab = svg.labelLineSegment(
-        this.lineSegments[i],
-        {
-          label: sideLabels[i],
-          placement: sideLabelPlacement[i],
-          offset: sideLabelOffset[i],
-          label_rounding: sideLabelRounding[i],
-          style: sideLabelStyle
-        }
-      );
-      this.sideLabels.push(sLab);
+      if (labelSides[i]){
+        let sLab = svg.labelLineSegment(
+          this.lineSegments[i],
+          {
+            label: sideLabels[i],
+            placement: sideLabelPlacement[i],
+            offset: sideLabelOffset[i],
+            label_rounding: sideLabelRounding[i],
+            style: sideLabelStyle
+          }
+        );
+        this.sideLabels.push(sLab);
+      }
     }
 
   }
