@@ -579,20 +579,45 @@ class uSvg{
   //
   // }
 
-  labelLineSegment(p1 = new uPoint(), p2 = new uPoint(1,0),
-                   label="use_length",
-                   offset = new uPoint(0, 1),
-                   { label_rounding = 1,
-                     style={}
-                   } = {}
+  // labelLineSegment(
+  //                   p1 = new uPoint(),
+  //                   p2 = new uPoint(1,0),
+  //                   {
+  //                     label="use_length",
+  //                     offset = new uPoint(0, 1),
+  //                     label_rounding = 1,
+  //                     style={}
+  //                   } = {}
+  //                 ){
+  //
+  //   if (label === 'use_length'){
+  //     let n = p1.distanceTo(p2).toFixed(label_rounding);
+  //     label = n%1 ? n : Math.round(n) ;
+  //   }
+  //
+  //   let txt = this.addText(label, p1.midpoint(p2).add(offset), {style:style});
+  //
+  //   return txt;
+  //
+  // }
+
+  labelLineSegment(
+                    segment = new uLineSegment(),
+                    {
+                      label="use_length",
+                      placement = 0.5,
+                      offset = new uPoint(0, 1),
+                      label_rounding = 1,
+                      style={}
+                    } = {}
                   ){
 
     if (label === 'use_length'){
-      let n = p1.distanceTo(p2).toFixed(label_rounding);
+      let n = segment.length().toFixed(label_rounding);
       label = n%1 ? n : Math.round(n) ;
     }
 
-    let txt = this.addText(label, p1.midpoint(p2).add(offset), {style:style});
+    let txt = this.addText(label, segment.midpoint().add(offset), {style:style});
 
     return txt;
 
@@ -1206,6 +1231,40 @@ class uVertex{
 
 
 
+class uLineSegment{
+  constructor(
+              p0 = new uPoint(),
+              p1 = new uPoint(1, 0)
+            ){
+    [this.p0, this.p1] = [p0, p1];
+
+  }
+  length(){
+    return this.p0.distanceTo(this.p1);
+  }
+  midpoint(){
+    return this.p0.midpoint(this.p1);
+  }
+  delta(){
+    let dx = (this.p0.x - this.p1.x);
+    let dy = (this.p0.y - this.p1.y);
+    return new uPoint(dx, dy);
+  }
+  pointAlong(f=0.5){ // f is a fraction of the distance from p0
+    let v = this.delta();
+    let dx = f * v.x;
+    let dy = f * v.y;
+    return this.p0.addxy(dx, dy);
+  }
+  perpTo(f=0.5, offset=1){
+    //todo: location for a label
+  }
+}
+
+
+
+
+
 class uTriangle{
   constructor(p0 = new uPoint(),
               p1 = new uPoint(1,0),
@@ -1226,6 +1285,13 @@ class uTriangle{
     this.v1 = new uVertex([this.p0, this.p1, this.p2]);
     this.v2 = new uVertex([this.p1, this.p2, this.p0]);
     this.vertices = [this.v0, this.v1, this.v2];
+  }
+
+  setLineSegments(){
+    this.s0 = new uLineSegment(this.p0, this.p1);
+    this.s1 = new uLineSegment(this.p1, this.p2);
+    this.s2 = new uLineSegment(this.p2, this.p3);
+    this.lineSegments = [this.s0, this.s1, this.s2];
   }
 
   translate(p = new uPoint(), draw = true){
@@ -1252,9 +1318,16 @@ class uTriangle{
   draw( svg,
         {
           showAngleLabels = [false, false, false],
+          angleLabels = ["use_angle", "use_angle", "use_angle"],
           showAngleArcs = [false, false, false],
           angle_arc_r = [3, 3, 3],
           angleFontStyle = {},
+          labelSides = {},
+          sideLabels = ["use_length", "use_length", "use_length"],
+          sideLabelOffset = [1, 1, 1],
+          sideLabelRounding = [1, 1, 1],
+          sideLabelPlacement = [0.5, 0.5, 0.5],
+          sideLabelStyle = {},
           style={}
         } = {}
       ){
@@ -1276,6 +1349,13 @@ class uTriangle{
       "font-size": '0.75em'
     };
     angleFontStyle = {...defaultAngleFontStyle, ...angleFontStyle};
+
+    let defaultSideLabelStyle = {
+      "text-anchor": "middle",
+      "dominant-baseline":"central",
+      //"font-size": '0.75em'
+    };
+    sideLabelStyle = {...defaultSideLabelStyle, ...sideLabelStyle};
 
     //remove old triangle
     this.undraw();
@@ -1302,15 +1382,34 @@ class uTriangle{
     this.labels = [];
     for (let i = 0; i < showAngleLabels.length; i++){
       if (showAngleLabels[i]){
-        this.labels.push(
-          svg.addAngleLabel({
-            arc_r: angle_arc_r[i],
-            vertex: this.vertices[i],
-            style: angleFontStyle
-          })
-        );
+
+        let label = svg.addAngleLabel({
+          arc_r: angle_arc_r[i],
+          vertex: this.vertices[i],
+          angle_label: angleLabels[i],
+          style: angleFontStyle
+        });
+        this.labels.push(label);
       }
     }
+
+    //label sides
+    this.setLineSegments();
+    this.sideLabels = [];
+    for (let i=0; i < labelSides.length; i++){
+      let sLab = svg.labelLineSegment(
+        this.lineSegments[i],
+        {
+          label: sideLabels[i],
+          placement: sideLabelPlacement[i],
+          //offset: sideLabelOffset[i],
+          label_rounding: sideLabelRounding[i],
+          style: sideLabelStyle
+        }
+      );
+      this.sideLabels.push(sLab);
+    }
+
   }
 
   undraw(){
@@ -1325,6 +1424,11 @@ class uTriangle{
     if (this.labels !== undefined){
       for (let i=0; i<this.labels.length; i++){
         this.labels[i].remove();
+      }
+    }
+    if (this.sideLabels !== undefined){
+      for (let i=0; i<this.sideLabels.length; i++){
+        this.sideLabels[i].remove();
       }
     }
   }
