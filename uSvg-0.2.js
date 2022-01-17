@@ -606,7 +606,7 @@ class uSvg{
                     {
                       label="use_length",
                       placement = 0.5,
-                      offset = new uPoint(0, 1),
+                      offset = 1,
                       label_rounding = 1,
                       style={}
                     } = {}
@@ -617,7 +617,10 @@ class uSvg{
       label = n%1 ? n : Math.round(n) ;
     }
 
-    let txt = this.addText(label, segment.midpoint().add(offset), {style:style});
+    let lp = segment.perpTo({offset:offset});
+
+    let txt = this.addText(label, lp.p1, {style:style});
+
 
     return txt;
 
@@ -1237,17 +1240,17 @@ class uLineSegment{
               p1 = new uPoint(1, 0)
             ){
     [this.p0, this.p1] = [p0, p1];
-
+    this.midpoint = this.p0.midpoint(this.p1);
   }
   length(){
     return this.p0.distanceTo(this.p1);
   }
-  midpoint(){
-    return this.p0.midpoint(this.p1);
-  }
+  // midpoint(){
+  //   return this.p0.midpoint(this.p1);
+  // }
   delta(){
-    let dx = (this.p0.x - this.p1.x);
-    let dy = (this.p0.y - this.p1.y);
+    let dx = (this.p1.x - this.p0.x);
+    let dy = (this.p1.y - this.p0.y);
     return new uPoint(dx, dy);
   }
   pointAlong(f=0.5){ // f is a fraction of the distance from p0
@@ -1256,8 +1259,21 @@ class uLineSegment{
     let dy = f * v.y;
     return this.p0.addxy(dx, dy);
   }
-  perpTo(f=0.5, offset=1){
+  distanceAlong(d=1){
+    let len = this.length();
+    let f = d / this.length();
+    return this.pointAlong(f);
+  }
+  // reverse(){
+  //   [this.p0, this.p1] = [this.p1, this.p0];
+  // }
+  perpTo({f=0.5, offset=1}={}){
     //todo: location for a label
+    let halfSeg = new uLineSegment(this.midpoint, this.p1);
+    let pOff = halfSeg.distanceAlong(offset);
+    pOff = pOff.rotateAxis(90, this.midpoint);
+    let smallSeg = new uLineSegment(this.midpoint, pOff);
+    return smallSeg;
   }
 }
 
@@ -1290,7 +1306,7 @@ class uTriangle{
   setLineSegments(){
     this.s0 = new uLineSegment(this.p0, this.p1);
     this.s1 = new uLineSegment(this.p1, this.p2);
-    this.s2 = new uLineSegment(this.p2, this.p3);
+    this.s2 = new uLineSegment(this.p2, this.p0);
     this.lineSegments = [this.s0, this.s1, this.s2];
   }
 
@@ -1402,7 +1418,7 @@ class uTriangle{
         {
           label: sideLabels[i],
           placement: sideLabelPlacement[i],
-          //offset: sideLabelOffset[i],
+          offset: sideLabelOffset[i],
           label_rounding: sideLabelRounding[i],
           style: sideLabelStyle
         }
