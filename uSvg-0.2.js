@@ -60,6 +60,7 @@ class uSvg{
     this.setAttributes(t, style);
     t.textContent = txt;
     this.svg.appendChild(t);
+    return t;
   }
 
   setAttributes(element, style){
@@ -271,19 +272,17 @@ class uSvg{
 
     let rg = this.elemScale(arc_r);
 
-    if (vertex.getAngle() != 90){
+    if (vertex.getAngle().toPrecision(5) != 90){
       style.d = `M ${s1g.x} ${s1g.y} `;
       style.d += `A ${rg} ${rg} 0 0 0 ${s2g.x} ${s2g.y}`;
     }
     else{
       let p90 = cg.deltaP(s2g).rotate(45).scale(-(2**0.5));
       p90 = cg.add(p90);
-      console.log('p90', p90);
       style.d = `M ${s1g.x} ${s1g.y} `;
       style.d += `L ${p90.x} ${p90.y} L ${s2g.x} ${s2g.y}`;
     }
 
-    console.log(style.d);
     this.setAttributes(arc, style);
     this.svg.appendChild(arc);
 
@@ -588,7 +587,6 @@ class uSvg{
                    } = {}
                   ){
 
-    //label = label === "use_length" ? p1.distanceTo(p2).toFixed(label_rounding) : label;
     if (label === 'use_length'){
       let n = p1.distanceTo(p2).toFixed(label_rounding);
       label = n%1 ? n : Math.round(n) ;
@@ -1003,13 +1001,29 @@ class uPoint{
     let y = weight * this.y + (1-weight)*p.y;
     return new uPoint(x,y);
   }
-  rotate(angle=0){ //rotate about the origin
+  rotate(angle=0, axis = new uPoint()){ //rotate about the origin
     angle = angle * Math.PI / 180;
     let c = Math.cos(angle);
     let s = Math.sin(angle);
     let x = this.x * c - this.y * s;
     let y = this.y * c + this.x * s;
+
     return new uPoint(x,y);
+  }
+  rotateAxis(angle=0, axis = new uPoint()){ //rotate about an axis
+    console.log(angle, this);
+    angle = angle * Math.PI / 180;
+    //console.log(angle);
+    let c = Math.cos(angle);
+    let s = Math.sin(angle);
+
+    let dx = this.x - axis.x  ;
+    let dy = this.y -axis.y  ;
+    let x = dx * c - dy * s;
+    let y = dy * c + dx * s;
+
+    let newPt = axis.add(new uPoint(x,y))
+    return newPt;
   }
 }
 
@@ -1216,13 +1230,42 @@ class uTriangle{
     this.vertices = [this.v0, this.v1, this.v2];
   }
 
+  translate(p = new uPoint(), draw = true){
+    let p0 = this.p0.add(p);
+    let p1 = this.p1.add(p);
+    let p2 = this.p2.add(p);
+
+    this.setPoints(p0, p1, p2);
+
+    if (draw){ this.draw(this.svg, this.drawArguments)};
+  }
+
+  rotate(angle = 0, {axis = new uPoint(), draw = true} = {}){
+    //angle in degrees
+    let p0 = this.p0.rotateAxis(angle, axis);
+    let p1 = this.p1.rotateAxis(angle, axis);
+    let p2 = this.p2.rotateAxis(angle, axis);
+
+    console.log(p0, p1, p2)
+
+    this.setPoints(p0, p1, p2);
+
+    if (draw){ this.draw(this.svg, this.drawArguments)};
+  }
+
   draw( svg,
-        { show_angles = [false, false, false],
+        {
+          showAngleLabels = [false, false, false],
+          showAngleArcs = [false, false, false],
           angle_arc_r = [3, 3, 3],
-          fontStyle = {},
+          angleFontStyle = {},
           style={}
         } = {}
       ){
+
+    //store passed arguments
+    this.svg = svg;
+    this.drawArguments = arguments[1];
 
     let defaultStyle = {
       fill:"none",
@@ -1231,12 +1274,15 @@ class uTriangle{
     };
     style = {...defaultStyle, ...style};
 
-    let defaultFontStyle = {
+    let defaultAngleFontStyle = {
       "text-anchor": "middle",
       "dominant-baseline":"central",
       "font-size": '0.75em'
     };
-    fontStyle = {...defaultFontStyle, ...fontStyle};
+    angleFontStyle = {...defaultAngleFontStyle, ...angleFontStyle};
+
+    //remove old triangle
+    this.undraw();
 
     //draw polygon
     let pts = this.pts;
@@ -1246,26 +1292,45 @@ class uTriangle{
     //draw angles
     this.setVertices();
     this.arcs = [];
-    this.labels = [];
-    for (let i = 0; i < show_angles.length; i++){
-      if (show_angles[i]){
+    for (let i = 0; i < showAngleArcs.length; i++){
+      if (showAngleArcs[i]){
         this.arcs.push(
           svg.addAngleArc({
             arc_r: angle_arc_r[i],
             vertex: this.vertices[i]
           })
         );
+      }
+    }
+
+    this.labels = [];
+    for (let i = 0; i < showAngleLabels.length; i++){
+      if (showAngleLabels[i]){
         this.labels.push(
           svg.addAngleLabel({
             arc_r: angle_arc_r[i],
             vertex: this.vertices[i],
-            style: fontStyle
+            style: angleFontStyle
           })
         );
       }
     }
+  }
 
-
+  undraw(){
+    if (this.polyline !== undefined){
+      this.polyline.remove();
+    }
+    if (this.arcs !== undefined){
+      for (let i=0; i<this.arcs.length; i++){
+        this.arcs[i].remove();
+      }
+    }
+    if (this.labels !== undefined){
+      for (let i=0; i<this.labels.length; i++){
+        this.labels[i].remove();
+      }
+    }
   }
 
 }
@@ -1273,23 +1338,21 @@ class uTriangle{
 
 
 class uRightTriangle2 extends uTriangle{
-  constructor(a, b){
+  constructor(a = 1, b = 1, pos = new uPoint()){
 
     super();
 
     this.a = a;
     this.b = b;
     this.c = (a**2 + b**2)**0.5;
+    this.pos = pos;
 
     //local coordinates of triangle
-    let p1 = new uPoint(); // the right angle
+    let p1 = pos; // the right angle
     let p2 = p1.addxy(0, this.a);
     let p3 = p1.addxy( this.b, 0);
 
     this.setPoints(p1, p2, p3);
-
-    console.log("pts", this.pts);
-
 
 
 
@@ -1304,8 +1367,5 @@ class uRightTriangle2 extends uTriangle{
     if (deg){b = b * 180/Math.PI;}
     return b;
   }
-  rotate(angle=90){ //all in local coordinates
 
-
-  }
 }

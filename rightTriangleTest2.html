@@ -27,25 +27,28 @@
         <script type="text/javascript" id="v0">
           svg = new uSvgGraph({elementInfo:{width:400,height:400}, axesInfo:{showAxes:false}});
 
-          p1 = new uPoint(-7, -7);
-          tri = svg.addRightTriangle({
-            pos:p1,
-            a:6, b:9,
-            arc_r: 2.5,
-          });
 
-          tri = new uRightTriangle2(6, 9);
+          tri = new uRightTriangle2(6, 9, new uPoint(1,3));
 
           tri.draw(
             svg,
             {
-              show_angles: [true, true, true],
+              showAngleLabels: [true, true, true],
+              showAngleArcs: [true, true, true],
               angle_arc_r: [1, 2, 3],
-              fontStyle: {'font-size': '0.6em'}
+              angleFontStyle: {'font-size': '0.6em'}
             }
           );
 
+
+          tri.translate(new uPoint(-3,-1), draw=true);
+
+          tri.rotate(10, {axis:tri.p0});
+
+
           svg.drawPoint(new uPoint());
+
+
 
           //console.log(tri.vertices);
           // arc = svg.addArcToVertex({r:2, vertex:tri.vertices});
