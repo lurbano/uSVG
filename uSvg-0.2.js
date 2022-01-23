@@ -1311,6 +1311,7 @@ class uTriangle{
     this.s1 = new uLineSegment(this.p1, this.p2);
     this.s2 = new uLineSegment(this.p2, this.p0);
     this.lineSegments = [this.s0, this.s1, this.s2];
+    this.lengths = [this.s0.length(), this.s1.length(), this.s2.length()];
   }
 
   translate(p = new uPoint(), draw = true){
