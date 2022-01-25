@@ -478,128 +478,6 @@ class uSvg{
 
   }
 
-  // addRightTriangle({pos = new uPoint(), a = 1, b = 1,
-  //   flip = "",
-  //   rotate = 0, //degrees
-  //   arc_r = 2,
-  //   show_A_angle=true,
-  //   show_B_angle=true,
-  //   A_angle_label= 'use_angle', // "α",
-  //   B_angle_label= 'use_angle', // "β",
-  //   angleLabelStyle = {},
-  //   show_a_side = true,
-  //   show_b_side = true,
-  //   show_c_side = true,  //hypothenuse
-  //   a_side_offset = new uPoint(-.5,0),
-  //   b_side_offset = new uPoint(0,-.5),
-  //   c_side_offset = new uPoint(.5, 0.5),
-  //   a_side_label = "use_length",
-  //   b_side_label = "use_length",
-  //   c_side_label = "use_length",
-  //   sideLabelStyle = {},
-  //   style={}} = {}){
-  //   //a is the vertical side length
-  //   //rotate is counterclockwise
-  //   // flip can be vertical ("v"), horizontal ("h"), or both ("vh")
-  //
-  //
-  //   let defaultStyle = {
-  //     fill:"none", stroke:"#000000",
-  //     "stroke-width": 2, points: "",
-  //     //"transform-origin": `${p.x} ${p.y}`
-  //   };
-  //   style = {...defaultStyle, ...style};
-  //
-  //   let defaultAngleLabelStyle = {
-  //     "text-anchor": "middle",
-  //     "dominant-baseline":"central",
-  //     "font-size": '0.75em'
-  //   };
-  //   angleLabelStyle = {...defaultAngleLabelStyle, ...angleLabelStyle};
-  //
-  //   let defaultSideLabelStyle = {
-  //     "text-anchor": "middle",
-  //     "dominant-baseline":"central",
-  //     //"font-size": '0.75em'
-  //   };
-  //   sideLabelStyle = {...defaultSideLabelStyle, ...sideLabelStyle};
-  //
-  //   //flip vertically or horizontally
-  //   a = /v/.test(flip) ? -a : a;
-  //   b = /h/.test(flip) ? -b : b;
-  //
-  //   let p = this.elemCoords(pos);
-  //   if (rotate != 0){
-  //     let t = `rotate(${-rotate}, ${p.x}, ${p.y})`;
-  //     style.transform = style.transform === undefined ? t : `${t} ${style.transform}`;
-  //   }
-  //
-  //   let p1 = pos;
-  //   let p2 = pos.addxy(0, a);
-  //   let p3 = pos.addxy(b, 0);
-  //
-  //   // draw triangle
-  //   let pts = [p1, p2, p3, p1];
-  //   let line = this.addPolyline(pts, {style});
-  //
-  //   let tri = new uRightTriangle(a, b);
-  //   tri.line = line;
-  //   //tri.vertices = [p1, p2, p3];
-  //
-  //   if (show_A_angle){
-  //     let arcA = this.addArcToVertex({
-  //       r: arc_r,
-  //       vertex: [p1, p2, p3],
-  //       angle_label: A_angle_label,
-  //       angleLabelStyle: angleLabelStyle
-  //     })
-  //   }
-  //   if (show_B_angle){
-  //     let arcB = this.addArcToVertex({
-  //       r: arc_r,
-  //       vertex: [p2, p3, p1],
-  //       angle_label: B_angle_label,
-  //       angleLabelStyle: angleLabelStyle
-  //     })
-  //   }
-  //
-  //   if (show_a_side){
-  //     a_side_label = (a_side_label === 'use_length') ? a : a_side_label;
-  //     this.labelLineSegment(p1, p2, a_side_label, a_side_offset, {style:sideLabelStyle});
-  //   }
-  //   if (show_b_side){
-  //     b_side_label = (b_side_label === 'use_length') ? b : b_side_label;
-  //     this.labelLineSegment(p1, p3, b_side_label, b_side_offset, {style:sideLabelStyle});
-  //   }
-  //   if (show_c_side){
-  //     this.labelLineSegment(p2, p3, c_side_label, c_side_offset, {style:sideLabelStyle});
-  //   }
-  //
-  //   return tri;
-  //
-  // }
-
-  // labelLineSegment(
-  //                   p1 = new uPoint(),
-  //                   p2 = new uPoint(1,0),
-  //                   {
-  //                     label="use_length",
-  //                     offset = new uPoint(0, 1),
-  //                     label_rounding = 1,
-  //                     style={}
-  //                   } = {}
-  //                 ){
-  //
-  //   if (label === 'use_length'){
-  //     let n = p1.distanceTo(p2).toFixed(label_rounding);
-  //     label = n%1 ? n : Math.round(n) ;
-  //   }
-  //
-  //   let txt = this.addText(label, p1.midpoint(p2).add(offset), {style:style});
-  //
-  //   return txt;
-  //
-  // }
 
   labelLineSegment(
                     segment = new uLineSegment(),
@@ -1124,20 +1002,7 @@ function get_uLine_from_slope_and_point(m = 1, pt = new uPoint(1,1)){
   let b = pt.y - m * pt.x;
   return new uLine(m, b);
 }
-// function get_intersection_of_two_uLines(l1, l2){
-//   let x = (l2.b - l1.b) / (l1.m - l2.m);
-//   let y = l1.m * x + l1.b;
-//   return new uPoint(x, y);
-// }
 
-class uQuadratic{
-  constructor(a=1, b=0, c=0){
-    this.a = a; this.b = b; this.c = c;
-  }
-  y(x){
-    return this.a * x**2 + this.b*x + this.c;
-  }
-}
 
 class uVector{
   constructor(pos = new uPoint(), v = new uPoint(1,1)){
@@ -1146,35 +1011,6 @@ class uVector{
   }
 }
 
-// class uRightTriangle{
-//   constructor(a, b){
-//     this.a = a; this.b = b;
-//     this.c = (a**2 + b**2)**0.5;
-//
-//     //local coordinates of triangle
-//     this.C = new uPoint();
-//     this.A = this.C.addxy(0, this.a);
-//     this.B = this.C.addxy( this.b, 0);
-//     this.vertexC = [this.A, this.C, this.B];
-//     this.vertexA = [this.C, this.A, this.B];
-//     this.vertexB = [this.C, this.B, this.A];
-//   }
-//   angle_a(deg=false){
-//     let a = Math.asin(this.b/this.c);
-//     if (deg){a = a * 180/Math.PI;}
-//     return a;
-//   }
-//   angle_b(deg=false){
-//     let b = Math.asin(this.a/this.c);
-//     if (deg){b = b * 180/Math.PI;}
-//     return b;
-//   }
-//   rotate(angle=90){ //all in local coordinates
-//     this.A = this.A.rotate(angle);
-//     this.B = this.B.rotate(angle);
-//
-//   }
-// }
 
 class uVertex{
   constructor(vertex = [new uPoint(1,0), new uPoint(0,0), new uPoint(0,1)]){
@@ -1538,6 +1374,41 @@ function getRightTriangle({
     return new uRightTriangle(a, b, pos);
   }
 
+}
 
 
+
+class uQuadratic{
+  constructor(a=1, b=0, c=0){
+    this.a = a; this.b = b; this.c = c;
+  }
+  y(x){
+    return this.a * x**2 + this.b*x + this.c;
+  }
+  getPoint(x){
+    return new uPoint(x, this.y(x));
+  }
+  tangentLine(x){
+    let m = this.dydx(x);
+    let b = this.y(x) - m * x;
+    return new uLine(m, b);
+  }
+  dydx(x){
+    return 2*this.a*x + this.b;
+  }
+  zeros(){
+    let det = this.b**2 - 4*this.a*this.c;
+    let x1 = (-this.b + det**0.5)/(2*this.a);
+    let x2 = (-this.b - det**0.5)/(2*this.a);
+    console.log('zeros', det, x1, x2)
+    return [new uPoint(x1, 0), new uPoint(x2, 0)];
+  }
+  vertex(){
+    let x = -this.b / (2 * this.a);
+    return new uPoint(x, this.y(x));
+  }
+  critPointType(){
+    let txt = this.a > 0 ? "minimum" : "maximum";
+    return txt;
+  }
 }
