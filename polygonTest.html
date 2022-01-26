@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>SVG Test</title>
+
+    <script type="text/javascript" src="./uSvg-0.3.js"></script>
+
+    <style media="screen">
+      svg {
+        border: 1px solid black;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Regular Polygons</h1>
+
+        <script type="text/javascript" id="v0">
+          svg = new uSvgGraph({elementInfo:{width:400,height:400}, axesInfo:{showAxes:false}});
+
+
+          poly = new uRegularPolygon({
+            pos:new uPoint(1,2),
+            sideLength:4,
+            rotate: 20
+          });
+          poly.drawPoints(svg);
+          poly.drawPolygon(svg);
+          poly.drawAngleArc({r:2});
+
+          svg.drawPoint(new uPoint());
+
+          //tri = new uRightTriangle(6, 9, new uPoint(0,0));
+
+          // tri.draw(
+          //   svg,
+          //   {
+          //     showAngleLabels: [true, true, true],
+          //     showAngleArcs: [true, true, true],
+          //     angleLabels: ["use_angle", "theta", "use_angle"],
+          //     angleLabelRounding: [1, 1, 1],
+          //     angle_arc_r: [1, 2, 3],
+          //     angleFontStyle: {'font-size': '0.7em'},
+          //     labelSides: [true, true, false],
+          //     sideLabels: ["a", "use_length", "use_length"],
+          //     sideLabelOffset: [0.5, 0.75, 0.5]
+          //   }
+          // );
+          //
+          //
+          // tri.translate(new uPoint(-3,-1), draw=true);
+          //
+          // tri.rotate(45, {axis:tri.p0});
+          //
+          //
+          // svg.drawPoint(new uPoint());
+
+
+
+          //console.log(tri.vertices);
+          // arc = svg.addArcToVertex({r:2, vertex:tri.vertices});
+          //
+          // console.log("arc.vertices", arc.vertices);
+          console.log("done");
+
+        </script>
+
+
+
+  </body>
+
+</html>

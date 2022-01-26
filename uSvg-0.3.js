@@ -1412,3 +1412,107 @@ class uQuadratic{
     return txt;
   }
 }
+
+class uRegularPolygon{
+  //ref: https://www.nagwa.com/en/explainers/189136430432/
+
+  constructor({nsides=6, sideLength=1, pos=new uPoint(), rotate=0} = {}){
+    this.nsides = nsides;
+    this.sideLength = sideLength;
+    this.pos = pos;
+    this.rotate = rotate;
+    this.interiorAngle = 180 - 360/this.nsides; //interior angle
+    this.centralAngle = 360/this.nsides;
+
+    this.setPoints();
+
+  }
+
+  setPoints(){
+    this.pts = [];
+    for (let i=0; i<this.nsides; i++){
+      let p = new uPoint(this.sideLength, 0);
+      p = p.rotate(this.centralAngle*i+this.rotate);
+      p.move(this.pos);
+      this.pts.push(p);
+    }
+    this.setVertices();
+
+  }
+
+  setVertices(){
+    this.vertices = [];
+
+    //first vertex
+    let v = new uVertex([ this.pts[1],
+                          this.pts[0],
+                          this.pts[this.pts.length-1]
+                       ] );
+    this.vertices.push(v)
+
+    //middle vertices
+    for (let i=1; i<this.nsides-1; i++){
+      let v = new uVertex([this.pts[i+1], this.pts[i], this.pts[i-1]]);
+      this.vertices.push(v);
+    }
+
+    //last vertex
+    v = new uVertex([ this.pts[0],
+                      this.pts[this.pts.length-1],
+                      this.pts[this.pts.length-2]
+                    ] );
+    this.vertices.push(v)
+
+  }
+
+  drawPoints(svg, {style={}} = {}){
+
+    this.svg = svg;
+
+    let defaultStyle = {
+      fill:"none",
+      stroke:"#000000",
+      "stroke-width": 1,
+    };
+    style = {...defaultStyle, ...style};
+
+    //remove old points
+    //this.undrawPts(svg);
+
+    // add point symbols
+    for (let i=0; i<this.pts.length; i++){
+      this.pts[i].symbol = svg.drawPoint(this.pts[i], {style:style});
+    }
+
+  }
+
+  undrawPts(svg){
+    for (let i=0; i<this.pts; i++){
+      if (this.pts[i].symbol !== undefined){
+        this.pts[i].symbol.remove();
+      }
+    }
+  }
+
+  drawPolygon(svg, {style={}} = {}){
+    //remove old line
+    if (this.polyline !== undefined){this.polyline.remove()};
+    //draw line
+    this.polyline = svg.addPolyline([...this.pts, ...[this.pts[0]]], {style:style});
+  }
+
+  drawAngleArc({n=0, r=3, style={}} = {}){
+    //remove old arc
+    if (this.vertices[n].arc !== undefined){ this.vertices[n].arc.remove()};
+    //add new arc
+    this.vertices[n].arc = svg.addAngleArc({arc_r:r, vertex:this.vertices[n]});
+  }
+
+  drawAngleLabel({ n=0, angleLabel='use_angle', angleLabelRounding=0, style={}
+                 } = {}){
+
+
+  }
+
+
+}
