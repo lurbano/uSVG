@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>SVG Test</title>
 
-    <script type="text/javascript" src="./uSvg-0.3.js"></script>
+    <script type="text/javascript" src="./uSvg-0.3.1.js"></script>
 
     <style media="screen">
       svg {
@@ -21,13 +21,14 @@
 
 
           poly = new uRegularPolygon({
-            pos:new uPoint(1,2),
+            translate:new uPoint(1,2),
             sideLength:4,
             rotate: 20
           });
           poly.drawPoints(svg);
           poly.drawPolygon(svg);
           poly.drawAngleArc({r:2});
+          
 
           svg.drawPoint(new uPoint());
 
