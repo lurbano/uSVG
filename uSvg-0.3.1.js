@@ -1112,6 +1112,27 @@ class uLineSegment{
     let smallSeg = new uLineSegment(this.midpoint, pOff);
     return smallSeg;
   }
+  draw(svg, {style = {}} = {}){
+    this.line = svg.addLine(this.p0, this.p1, {style:style});
+    return this.line;
+  }
+  label(svg, {
+              label="use_length",
+              placement = 0.5,
+              offset = 1,
+              label_rounding = 1,
+              style={}
+            } = {}
+        ){
+    this.label = svg.labelLineSegment(this, {
+      label: label,
+      placement: placement,
+      offset: offset,
+      label_rounding: label_rounding,
+      style: style
+    })
+    return this.label;
+  }
 }
 
 
@@ -1334,7 +1355,7 @@ function getRightTriangle({
           theta = undefined,
           pos = new uPoint()
         } = {}){
-  
+
   if (alpha !== undefined && a !== undefined){
     b = a * Math.tan(uRad(alpha));
     return new uRightTriangle(a, b, pos);

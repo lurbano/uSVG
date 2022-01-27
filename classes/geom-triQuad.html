@@ -231,6 +231,131 @@
 
 
 
+      <h3>Parallelogram</h3>
+        <script type="text/javascript" id="v0">
+        svg = new uSvgGraph({elementInfo:{width:400,height:400}, axesInfo:{showAxes:false}});
+
+        p1 = new uPoint(-10, 0);
+        p4 = new uPoint(-4, 8);
+        p2 = new uPoint(4,0);
+        p3 = new uPoint(10, 8);
+
+        poly = new uPolygon({
+          pts: [p1, p2, p3, p4],
+          //rotate: 20,
+          //translate: new uPoint(2, -4)
+        });
+        //poly.drawPoints(svg);
+        poly.drawPolygon(svg);
+
+
+        // d1 = svg.addLine(p1,p3);
+        // d2 = svg.addLine(p2,p4);
+
+        l1 = new uLineSegment(p1, p2);
+        l2 = new uLineSegment(p3,p4);
+
+        svg.labelLineSegment(l1, {
+          offset: -1,
+          label: "2x + 9"
+        });
+        svg.labelLineSegment(l2, {
+          offset: -0.5,
+          label: "x + 11"
+        });
+
+
+        // svg.addText((l2.length()/2).toPrecision(2), new uPoint(-2,5.5));
+        // svg.addText("x", new uPoint(-5,3), {style:{'font-style':'italic'}});
+        poly.drawAngleArc({n:1, r:3});
+        poly.drawAngleLabel({
+          n: 1,
+          arc_r:5,
+          angleLabel: '5y + 17'
+        });
+        poly.drawAngleArc({n:3, r:3});
+        poly.drawAngleLabel({
+          n: 3,
+          arc_r:5,
+          //angleLabel: '3y + 19'
+        });
+          //poly.rotate(10);
+
+
+          //svg.drawPoint(new uPoint());
+
+        </script>
+
+
+
+      <h3>Trapezoid Midpoint</h3>
+        <script type="text/javascript" id="v0">
+        svg = new uSvgGraph({elementInfo:{width:400,height:400}, axesInfo:{showAxes:false}});
+
+        p1 = new uPoint(-8, 0);
+        p2 = new uPoint(4, 0);
+        p3 = new uPoint(5, 8);
+        p4 = new uPoint(-4, 8);
+
+        poly = new uPolygon({
+          pts: [p1, p2, p3, p4],
+          //rotate: 20,
+          //translate: new uPoint(2, -4)
+        });
+        //poly.drawPoints(svg);
+        poly.drawPolygon(svg);
+
+
+        // d1 = svg.addLine(p1,p3);
+        // d2 = svg.addLine(p2,p4);
+
+        l1 = new uLineSegment(p2, p3);
+        l2 = new uLineSegment(p1,p4);
+
+        l3 = new uLineSegment(l1.midpoint, l2.midpoint);
+
+        l3.draw(svg);
+
+        t1 = new uLineSegment(p1, p2);
+        t2 = new uLineSegment(p3, p4);
+
+
+        svg.labelLineSegment(t1, {
+          offset: -1,
+          //label: "x"
+        });
+        svg.labelLineSegment(t2, {
+          offset: -0.5,
+          label: "x",
+          style:{'font-style':'italic'}
+        });
+
+        svg.labelLineSegment(l3, {
+          offset: -0.5,
+          //label: "x + 11"
+        });
+
+
+        // svg.addText((l2.length()/2).toPrecision(2), new uPoint(-2,5.5));
+        // svg.addText("x", new uPoint(-5,3), {style:{'font-style':'italic'}});
+        // poly.drawAngleArc({n:1, r:3});
+        // poly.drawAngleLabel({
+        //   n: 1,
+        //   arc_r:5,
+        //   angleLabel: '5y + 17'
+        // });
+        // poly.drawAngleArc({n:3, r:3});
+        // poly.drawAngleLabel({
+        //   n: 3,
+        //   arc_r:5,
+        //   //angleLabel: '3y + 19'
+        // });
+          //poly.rotate(10);
+
+
+          //svg.drawPoint(new uPoint());
+
+        </script>
 
   </body>
 
