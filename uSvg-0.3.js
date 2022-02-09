@@ -1068,7 +1068,54 @@ class uVertex{
 
 }
 
+class uPolyLine{
+  constructor({
+                pts = [], //uPoints array
+                segs = [], //uLineSegments array
+              }){
+    this.pts = pts;
+    this.segs = segs;
+  }
+  draw(svg, {
+              style = {}
+            } = {}){
 
+    this.svg = svg;
+    this.drawArguments = arguments[1];
+    let defaultStyle = {
+      fill:"none",
+      stroke:"#000000",
+      "stroke-width": 1,
+    };
+    style = {...defaultStyle, ...style};
+
+    svg.addPolyline(this.pts, {style:style});
+
+  }
+  rotate(angle=0, axis=new uPoint()){
+    let pts = []
+    for (let i=0; i<this.pts.length; i++){
+      pts.push(this.pts[i].rotate(angle, axis));
+    }
+    return new uPolyLine({pts:pts});
+  }
+  translate(x,y){
+    let pts = []
+    for (let i=0; i<this.pts.length; i++){
+      pts.push(this.pts[i].addxy(x,y));
+    }
+    return new uPolyLine({pts:pts});
+  }
+  add(p = new uPolyLine()){
+    let pts = [...this.pts, ...p.pts];
+    return new uPolyLine({pts:pts});
+  }
+  moveStartTo(x,y){
+    let dx = x - this.pts[0].x;
+    let dy = y - this.pts[0].y;
+    return this.translate(x, y);
+  }
+}
 
 class uLineSegment{
   constructor(
