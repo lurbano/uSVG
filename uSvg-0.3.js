@@ -1095,7 +1095,7 @@ class uPolyLine{
   rotate(angle=0, axis=new uPoint()){
     let pts = []
     for (let i=0; i<this.pts.length; i++){
-      pts.push(this.pts[i].rotate(angle, axis));
+      pts.push(this.pts[i].rotateAxis(angle, axis));
     }
     return new uPolyLine({pts:pts});
   }
@@ -1114,6 +1114,14 @@ class uPolyLine{
     let dx = x - this.pts[0].x;
     let dy = y - this.pts[0].y;
     return this.translate(x, y);
+  }
+  reverse(){
+    let pts = [];
+    let n = this.pts.length;
+    for (let i=0; i<this.pts.length; i++){
+      pts.push(this.pts[n-1-i]);
+    }
+    return new uPolyLine({pts:pts})
   }
 }
 

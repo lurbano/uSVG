@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Fractal (Dragon)</title>
+    <script type="text/javascript" src="../uSvg-0.4.js"></script>
+    <style media="screen">
+      input[type='number'] { width:5em;}
+      #refDiagram, #diagram{
+        border: 1px solid black;
+        width: fit-content;
+      }
+    </style>
+
+  </head>
+  <body>
+
+    <input type="button" id="copySVG" value="Copy To Clipboard">
+
+    <div id="diagram">
+    </div>
+
+    <script type="text/javascript" id="v0">
+      svg = new uSvgGraph({elementInfo:{width:400,height:400}, axesInfo:{showAxes:false}});
+
+      dx = 0.2;
+      iterations = 5;
+
+      fractal = new fractalDragon();
+
+      fractal.draw(svg, {iterations: 8});
+
+      console.log("done");
+
+    </script>
+
+
+
+    <div id="controls">
+      <table>
+        <tr>
+          <th></th>
+          <th></th>
+          <th>angle</th>
+          <th>arc</th>
+        </tr>
+
+        <tr>
+          <td>Iterations (<em>i</em>): </td>
+          <td><input type="number" id="iterations" value=""></td>
+        </tr>
+        <tr>
+          <td>Size (<em>dx</em>): </td>
+          <td><input type="number" id="dx" value="" step='0.1'></td>
+        </tr>
+
+      </table>
+
+
+    </div>
+
+
+  </body>
+
+  <script type="text/javascript">
+
+    function redraw(diagram){
+      diagram.undraw();
+      diagram.draw(diagram.svg, diagram.drawArguments);
+    }
+
+
+    //Inital Values
+    iterationsDiv = document.getElementById("iterations");
+    iterationsDiv.value = fractal.iterations;
+    dxDiv = document.getElementById("dx");
+    dxDiv.value = fractal.dx;
+
+
+    //updates
+    document.getElementById("iterations").addEventListener("change", function(){
+      let dx = parseFloat(document.getElementById("dx").value);
+      let iterations = parseInt(this.value);
+
+      fractal.draw(svg, {dx:dx, iterations:iterations});
+    })
+
+    document.getElementById("dx").addEventListener("change", function(){
+      let iterations = parseInt(document.getElementById("iterations").value);
+      let dx = parseFloat(this.value);
+
+      fractal.draw(svg, {dx:dx, iterations:iterations});
+    })
+
+
+
+  </script>
+
+
+</html>

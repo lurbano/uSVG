@@ -14,7 +14,7 @@
 
   </head>
   <body>
-    <h1>Fractal class test</h1>
+    <h1>Triangle class test</h1>
 
       <br>
 
@@ -22,20 +22,23 @@
           svg = new uSvgGraph({elementInfo:{width:400,height:400}, axesInfo:{showAxes:false}});
 
           pt1 = new uPoint(0,0);
-          pt2 = new uPoint(0, .2);
-          s = new uPolyLine({pts:[pt1, pt2]});
+          pt2 = new uPoint(0, 1);
+          pt3 = new uPoint(1, 1);
+          s = new uPolyLine({pts:[pt1, pt2, pt3]});
+          console.log(s.pts);
+          let s2 = s.rotate(90);
+          console.log(s2.pts);
+          //s.draw(svg);
+          //s2.draw(svg);
 
+          s3 = s2.translate(4,4);
+          //s3.draw(svg);
 
-          // Dragon Curve: https://bentrubewriter.com/2012/04/25/fractals-you-can-draw-the-dragon-curve-or-the-jurassic-fractal/
-          for (var i=0; i<10; i++){
+          svg.drawPoint(new uPoint());
 
-            n = s.pts.length-1;
-            s2 = s.rotate(-90, s.pts[n]);
-
-            s3 = s.add(s2.reverse());
-            s3.draw(svg);
-            s = s3;
-          }
+          s4 = s.add(s3);
+          s4 = s4.moveStartTo(1,2);
+          s4.draw(svg);
 
           //console.log(tri.vertices);
           // arc = svg.addArcToVertex({r:2, vertex:tri.vertices});
