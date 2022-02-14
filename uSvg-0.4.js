@@ -477,6 +477,41 @@ class uSvg{
     return line;
 
   }
+  animatePolyline(fromPts=[new uPoint(0,0), new uPoint(2,3)], toPts=[new uPoint(0,0), new uPoint(2,3)], {style={}}={}){
+    // pts is an array of uPoints
+    // start and end must have the same number of points.
+
+    let defaultStyle = {
+      fill:"none", stroke:"#000000",
+      "stroke-width": 2, points: ""
+    };
+    style = {...defaultStyle, ...style};
+
+    let anim = document.createElementNS("http://www.w3.org/2000/svg", "animate");
+    anim.setAttribute('attributeName', "points");
+    anim.setAttribute('dur', '2s');
+    let f = "";
+    let t = ""
+
+    for (let n=0; n<fromPts.length; n++){
+      let p = this.elemCoords(fromPts[n]);
+      f += `${p.x.toFixed(4)},${p.y.toFixed(4)} `;
+      p = this.elemCoords(toPts[n]);
+      t += `${p.x.toFixed(4)},${p.y.toFixed(4)} `;
+    }
+    anim.setAttribute('from', f);
+    anim.setAttribute('to', t);
+
+    style.points = t;
+
+    let line = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    line.appendChild(anim);
+    this.setAttributes(line, style);
+    this.svg.appendChild(line);
+
+    return line;
+
+  }
 
 
   labelLineSegment(
@@ -1092,6 +1127,22 @@ class uPolyLine{
     this.polyline = svg.addPolyline(this.pts, {style:style});
 
   }
+  animateFrom(svg, fromPoly = new uPolyLine(), {
+              style = {}
+            } = {}){
+
+    this.svg = svg;
+    this.drawArguments = arguments[1];
+    let defaultStyle = {
+      fill:"none",
+      stroke:"#000000",
+      "stroke-width": 1,
+    };
+    style = {...defaultStyle, ...style};
+
+    this.polyline = svg.animatePolyline(fromPoly.pts, this.pts, {style:style});
+
+  }
   remove(){
     if (this.polyline !== undefined){
       this.polyline.remove();
@@ -1127,6 +1178,9 @@ class uPolyLine{
       pts.push(this.pts[n-1-i]);
     }
     return new uPolyLine({pts:pts})
+  }
+  duplicate(){
+    return new uPolyLine({pts:this.pts});
   }
 }
 
@@ -1604,15 +1658,53 @@ class fractalDragon{
     this.polyline = new uPolyLine({pts:[pt1, pt2]});
 
     for (var i=0; i<this.iterations; i++){
-      this.polyline.remove();
 
       let n = this.polyline.pts.length-1;
       let s2 = this.polyline.rotate(-90, this.polyline.pts[n]);
 
       let s3 = this.polyline.add(s2.reverse());
+      this.polyline = s3;
+
+    }
+    this.polyline.draw(svg);
+
+  }
+  animateLastIteration(svg, {dx=this.dx, iterations=this.iterations, animateSettings={}, style={}} = {}){
+    let defaultStyle = {
+      fill:"none",
+      stroke:"#000000",
+      "stroke-width": 1,
+    };
+    style = {...defaultStyle, ...style};
+
+    this.dx = dx;
+    this.iterations = iterations;
+    this.svg = svg;
+    this.drawArgument = arguments[1];
+
+    //remove old
+    this.undraw();
+
+    let pt1 = new uPoint(0,0);
+    let pt2 = new uPoint(0, dx);
+    this.polyline = new uPolyLine({pts:[pt1, pt2]});
+    let oldPoly;
+
+    for (var i=0; i<this.iterations; i++){
+
+      let n = this.polyline.pts.length-1;
+      let oldPoly = this.polyline.duplicate();
+      oldPoly = this.polyline.add(oldPoly);
+      let s2 = this.polyline.rotate(-90, this.polyline.pts[n]);
+
+      let s3 = this.polyline.add(s2.reverse());
       //s3.draw(svg);
       this.polyline = s3;
-      this.polyline.draw(svg);
+      //this.polyline.draw(svg);
+      if (i === this.iterations-1) {
+        this.polyline.animateFrom(svg, oldPoly);
+      }
+
     }
   }
   undraw(){

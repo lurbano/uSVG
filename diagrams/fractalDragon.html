@@ -34,6 +34,22 @@
 
     </script>
 
+    <div id="animatedDiagram">
+    </div>
+
+    <script type="text/javascript" id="v0">
+      svgA = new uSvgGraph({elementInfo:{width:400,height:400}, axesInfo:{showAxes:false}});
+
+      dx = 0.2;
+      iterations = 5;
+
+      fractal = new fractalDragon();
+
+      fractal.animateLastIteration(svgA, {iterations: 8});
+
+      console.log("done");
+
+    </script>
 
 
     <div id="controls">
