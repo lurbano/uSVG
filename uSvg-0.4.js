@@ -942,6 +942,10 @@ class uPoint{
     let y = weight * this.y + (1-weight)*p.y;
     return new uPoint(x,y);
   }
+  slopeTo(p = new uPoint()){
+    let m = (p.y-this.y)/(p.x-this.x);
+    return m;
+  }
   rotate(angle=0, axis = new uPoint()){ //rotate about the origin
     angle = angle * Math.PI / 180;
     let c = Math.cos(angle);
