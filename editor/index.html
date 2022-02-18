@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>SVG Editor</title>
+    <script type="text/javascript" src="../uSvg-0.4.js"></script>
+    <style media="screen">
+      body {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        justify-items: center;
+        padding-bottom: 5em;
+      }
+      #drawingArea, #codeArea {
+        border: 1px solid black;
+        width: 95%;
+      }
+      #svgCode {
+        width: 100%;
+        height: 50em;
+      }
+
+    </style>
+
+  </head>
+  <body>
+
+    <div class="">Hi</div>
+    <div>
+      <input type="button" id="drawButton" value="Draw">
+    </div>
+    <div id="drawingArea">
+      drawing
+    </div>
+    <div id='codeArea'>
+      <textarea id="svgCode">
+        svg = new uSvgGraph({divId:'drawingArea', elementInfo:{width:400,height:400}, axesInfo:{showAxes:false}});
+
+
+        tri = new uRightTriangle(6, 9, new uPoint(0,0));
+
+        tri.draw(
+          svg,
+          {
+            showAngleLabels: [true, true, true],
+            showAngleArcs: [true, true, true],
+            angleLabels: ["use_angle", "theta", "use_angle"],
+            angleLabelRounding: [1, 1, 1],
+            angle_arc_r: [1, 2, 3],
+            angleFontStyle: {'font-size': '0.7em'},
+            labelSides: [true, true, false],
+            sideLabels: ["a", "use_length", "use_length"],
+            sideLabelOffset: [0.5, 0.75, 0.5]
+          }
+        );
+
+
+        tri.translate(new uPoint(-3,-1), draw=true);
+
+        tri.rotate(45, {axis:tri.p0});
+
+
+        svg.drawPoint(new uPoint());
+
+
+
+        //console.log(tri.vertices);
+        // arc = svg.addArcToVertex({r:2, vertex:tri.vertices});
+        //
+        // console.log("arc.vertices", arc.vertices);
+        console.log("done");
+
+
+      </textarea>
+    </div>
+
+  </body>
+
+  <script type="text/javascript">
+    drawDiv = document.getElementById("drawingArea");
+    svgDiv = document.getElementById("svgCode");
+    document.getElementById("drawButton").addEventListener("click", function(){
+      Function( svgDiv.value )();
+    })
+  </script>
+</html>

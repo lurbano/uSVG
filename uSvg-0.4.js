@@ -9,6 +9,7 @@ class uSvg{
       width: 400,
       height: 400,
       id:undefined,
+      clearOldElement: true,
       scale:"auto",
       dt: 10    //in milliseconds for animation
     }
@@ -449,6 +450,9 @@ class uSvg{
       }
     else {
       let parentElement = document.getElementById(this.divId);
+      if (elementInfo.clearOldElement) {
+        parentElement.innerHTML = '';
+      }
       parentElement.appendChild(this.svg);
     }
 
@@ -598,8 +602,9 @@ class uSvgGraph extends uSvg {
     let defaultElementInfo = {
       width: 400,
       height: 400,
-      id:undefined,
-      scale:"auto"
+      id: undefined,
+      clearOldElement: true,
+      scale: "auto"
     }
     elementInfo = {...defaultElementInfo, ...elementInfo};
 
