@@ -20,6 +20,9 @@
         width: 95%;
         height: 20em;
       }
+      #svgTextArea {
+        font-size: 0.5em;
+      }
 
 
     </style>
@@ -39,7 +42,7 @@
     <div id='codeArea'>
     </div>
 
-    <div class="">
+    <div id="svgTextArea">
       svg code
     </div>
 
@@ -48,6 +51,10 @@
 
   <script type="text/javascript" src="./codeflask/build/codeflask.min.js"></script>
   <script type="module" >
+    var drawingAreaId = 'drawingArea';
+    var svgTextAreaId = "svgTextArea";
+    var drawingArea = document.getElementById(drawingAreaId);
+    var svgTextArea = document.getElementById(svgTextAreaId);
 
     const flask = new CodeFlask('#codeArea',
                                 {
@@ -57,11 +64,24 @@
 
     flask.onUpdate((code) => {
       Function( code )();
+      let svgTxt = drawingArea.innerHTML;
+      let txtNode = document.createTextNode(svgTxt);
+      svgTextArea.innerHTML = '';
+      svgTextArea.appendChild(txtNode);
     });
 
     //initial code
     let initCode = `
-svg = new uSvgGraph({divId:'drawingArea', elementInfo:{width:400,height:400}, axesInfo:{showAxes:false}});
+svg = new uSvgGraph({
+            divId:'drawingArea',
+            elementInfo:{
+              width:400,
+              height:400
+            },
+            axesInfo:{
+              showAxes:true
+            }
+          });
 
 tri = new uRightTriangle(6, 9, new uPoint(0,0));
 
