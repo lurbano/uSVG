@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>SVG Editor</title>
+    <script type="text/javascript" src="../uSvg-0.4.1.js"></script>
+    <style media="screen">
+      body {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        justify-items: center;
+        padding-bottom: 5em;
+      }
+      #drawingArea {
+        border: 1px solid black;
+        width: 95%;
+        grid-column: 1;
+        grid-row: 2 / 4;
+      }
+      #codeArea {
+        border: 1px solid black;
+        width: 95%;
+        height: 20em;
+        grid-column: 2;
+        grid-row: 3 ;
+      }
+      #svgTextArea {
+        font-size: 0.5em;
+        grid-column: 1;
+        grid-row: 6;
+      }
+      #inputArea {
+        grid-column: 2;
+        grid-row: 2;
+      }
+
+      input[type='number'] { width:5em;}
+      input[type='text'] { width:7em;}
+
+
+    </style>
+
+  </head>
+  <body>
+
+    <div class="">
+      Using <a href="https://github.com/kazzkiq/CodeFlask">codeflask</a> editor.
+    </div>
+    <div id="inputArea">
+      <h5>Right Triangle</h3>
+        <table>
+          <tr>
+            <th></th>
+            <th>Fix</th>
+            <th>Value</th>
+            <th>Label</th>
+            <th>Angle</th>
+            <th>Arc</th>
+          </tr>
+
+          <tr>
+            <td>Angle 1 (α): </td>
+            <td><input type="checkbox" id="alphaFix"> </td>
+            <td><input type="number" id="alpha" value="">°</td>
+            <td><input type="text" id="alphaLabel" value="use_angle"></td>
+            <td><input type="checkbox" id="alphaShow"> </td>
+            <td><input type="checkbox" id="alphaArc"> </td>
+          </tr>
+          <tr>
+            <td>Angle 2 (θ):  </td>
+            <td><input type="checkbox" id="thetaFix"> </td>
+            <td><input type="number" id="theta" value="">°</td>
+            <td><input type="text" id="thetaLabel" value="use_angle"></td>
+            <td><input type="checkbox" id="thetaShow"> </td>
+            <td><input type="checkbox" id="thetaArc"> </td>
+          </tr>
+          <tr>
+            <td>Length 1 (a):  </td>
+            <td><input type="checkbox" id="aFix"> </td>
+            <td><input type="number" id="aLen" value=""><br></td>
+            <td><input type="text" id="aLenLabel" value="use_length"></td>
+            <td><input type="checkbox" id="aLenShow"> </td>
+          </tr>
+          <tr>
+            <td>Length 2 (b):  </td>
+            <td><input type="checkbox" id="bFix"> </td>
+            <td><input type="number" id="bLen" value=""><br></td>
+            <td><input type="text" id="bLenLabel" value="use_length"></td>
+            <td><input type="checkbox" id="bLenShow"> </td>
+          </tr>
+          <tr>
+            <td>hypot. (c):  </td>
+            <td><input type="checkbox" id="cFix"> </td>
+            <td><input type="number" id="cLen" value=""><br></td>
+            <td><input type="text" id="cLenLabel" value="use_length"></td>
+            <td><input type="checkbox" id="cLenShow"> </td>
+          </tr>
+        </table>
+
+      <!-- <input type="button" id="drawButton" value="Draw"> -->
+    </div>
+    <div id="drawingArea">
+      drawing
+    </div>
+    <div id='codeArea'>
+    </div>
+
+    <div id="svgTextArea">
+      <input type="button" id="copySVG" value="Copy To Clipboard">
+    </div>
+
+
+  </body>
+
+
+  <script type="module" >
+    var svg = new uSvgGraph({
+                  divId:'drawingArea',
+                  elementInfo: {
+                      width:400,
+                      height:300
+                    },
+                  axesInfo: {
+                    showAxes:false
+                  }
+                });
+
+    let opp = 10;
+    let theta = 30 * Math.PI / 180;
+    let adj = opp/Math.tan(theta);
+    console.log(opp, adj);
+    var tri = new uRightTriangle(opp, adj, new uPoint(-7.5,-6));
+    //let triRef = new uRightTriangle(10, 12, new uPoint(-7.5,-6));
+
+    tri.draw(
+          svg,
+          {
+            showAngleLabels: [false, true, true],
+            showAngleArcs: [true, true, true],
+            angle_arc_r: [1, 3, 4],
+            angleFontStyle: {'font-size': '1em'},
+            labelSides: [true, true, false],
+            sideLabels: ["use_length", "h = ?", "use_length"],
+            sideLabelOffset: [1, 1, 0.5]
+          }
+    );
+
+    function redraw(){
+      tri.undraw();
+      tri.draw(tri.svg, tri.drawArguments);
+    }
+
+    function updateInputs(butNot){
+      if (butNot != 'alpha'){
+        document.getElementById('alpha').value = tri.angles[1].toPrecision(3);
+      }
+      if (butNot != 'theat'){
+        document.getElementById('theta').value = tri.angles[2].toPrecision(3);
+      }
+      if (butNot != 'aLen'){
+        document.getElementById('aLen').value = tri.lengths[0].toPrecision(3);
+      }
+      if (butNot != 'cLen'){
+        document.getElementById('cLen').value = tri.lengths[1].toPrecision(3);
+      }
+      if (butNot != 'bLen'){
+        document.getElementById('bLen').value = tri.lengths[2].toPrecision(3);
+      }
+    }
+    function getFixed(){
+      return {
+        alphaFix: document.getElementById('alphaFix').checked,
+        thetaFix: document.getElementById('thetaFix').checked,
+        aFix: document.getElementById('aFix').checked,
+        bFix: document.getElementById('bFix').checked,
+        cFix: document.getElementById('cFix').checked,
+      }
+    }
+
+
+    //Inital Values
+    let alphaDiv = document.getElementById("alpha");
+    alphaDiv.value = tri.angles[1].toPrecision(3);
+    let thetaDiv = document.getElementById("theta");
+    thetaDiv.value = tri.angles[2].toPrecision(3);
+
+    document.getElementById("alphaShow").checked = tri.drawArguments.showAngleLabels[1];
+    document.getElementById("thetaShow").checked = tri.drawArguments.showAngleLabels[2];
+
+    document.getElementById("alphaArc").checked = tri.drawArguments.showAngleArcs[1];
+    document.getElementById("thetaArc").checked = tri.drawArguments.showAngleArcs[2];
+
+
+    let aLenDiv = document.getElementById("aLen");
+    aLenDiv.value = tri.lengths[0].toPrecision(3);
+    let bLenDiv = document.getElementById("bLen");
+    bLenDiv.value = tri.lengths[2].toPrecision(3);
+    let cLenDiv = document.getElementById("cLen");
+    cLenDiv.value = tri.lengths[1].toPrecision(3);
+
+    document.getElementById("aLenShow").checked = tri.drawArguments.labelSides[0];
+    document.getElementById("bLenShow").checked = tri.drawArguments.labelSides[2];
+    document.getElementById("cLenShow").checked = tri.drawArguments.labelSides[1];
+
+
+
+
+    //updates
+    document.getElementById("alpha").addEventListener("change", function(){
+      document.getElementById("thetaFix").checked = false;
+      let oldtri = tri; tri.undraw();
+      let fixed = getFixed(this.id);
+
+      if (fixed.aFix){
+        tri = getRightTriangle({
+          a: tri.a,
+          alpha: parseFloat(this.value),
+          pos: tri.pos
+        })
+      }
+      else if (fixed.bFix) {
+        tri = getRightTriangle({
+          b: tri.b,
+          alpha: parseFloat(this.value),
+          pos: tri.pos
+        })
+      }
+      else {
+        tri = getRightTriangle({
+          c: tri.c,
+          alpha: parseFloat(this.value),
+          pos: tri.pos
+        })
+      }
+      tri.draw(oldtri.svg, oldtri.drawArguments);
+      updateInputs(this.id);
+    })
+
+    document.getElementById("theta").addEventListener("change", function(){
+      document.getElementById("alphaFix").checked = false;
+      let oldtri = tri; tri.undraw();
+      let fixed = getFixed(this.id);
+
+      if (fixed.aFix){
+        tri = getRightTriangle({
+          a: tri.a,
+          [this.id]: parseFloat(this.value),
+          pos: tri.pos
+        })
+      }
+      else if (fixed.bFix) {
+        tri = getRightTriangle({
+          b: tri.b,
+          [this.id]: parseFloat(this.value),
+          pos: tri.pos
+        })
+      }
+      else {
+        tri = getRightTriangle({
+          c: tri.c,
+          [this.id]: parseFloat(this.value),
+          pos: tri.pos
+        })
+        console.log(tri);
+      }
+      tri.draw(oldtri.svg, oldtri.drawArguments);
+      updateInputs(this.id);
+    })
+
+    document.getElementById("aLen").addEventListener("change", function(){
+      //document.getElementById("alphaFix").checked = false;
+      let oldtri = tri; tri.undraw();
+      let fixed = getFixed(this.id);
+      console.log('fixed', fixed);
+
+      if (fixed.alphaFix) {
+        tri = getRightTriangle({
+          alpha: tri.alpha,
+          a: parseFloat(this.value),
+          pos: tri.pos
+        })
+      }
+      if (fixed.thetaFix) {
+        tri = getRightTriangle({
+          theta: tri.theta,
+          a: parseFloat(this.value),
+          pos: tri.pos
+        })
+      }
+      if (fixed.bFix) {
+        tri = getRightTriangle({
+          b: tri.b,
+          a: parseFloat(this.value),
+          pos: tri.pos
+        })
+      }
+      else {
+        tri = getRightTriangle({
+          c: tri.c,
+          a: parseFloat(this.value),
+          pos: tri.pos
+        })
+        console.log(tri);
+      }
+      tri.draw(oldtri.svg, oldtri.drawArguments);
+      updateInputs(this.id);
+    })
+
+    document.getElementById("bLen").addEventListener("change", function(){
+      //document.getElementById("alphaFix").checked = false;
+      let oldtri = tri; tri.undraw();
+      let fixed = getFixed(this.id);
+      console.log('fixed', fixed);
+
+      if (fixed.alphaFix) {
+        tri = getRightTriangle({
+          alpha: tri.alpha,
+          b: parseFloat(this.value),
+          pos: tri.pos
+        })
+      }
+      if (fixed.thetaFix) {
+        tri = getRightTriangle({
+          theta: tri.theta,
+          b: parseFloat(this.value),
+          pos: tri.pos
+        })
+      }
+      if (fixed.aFix) {
+        tri = getRightTriangle({
+          a: tri.a,
+          b: parseFloat(this.value),
+          pos: tri.pos
+        })
+      }
+      else {
+        tri = getRightTriangle({
+          c: tri.c,
+          b: parseFloat(this.value),
+          pos: tri.pos
+        })
+        console.log(tri);
+      }
+      tri.draw(oldtri.svg, oldtri.drawArguments);
+      updateInputs(this.id);
+    })
+
+    document.getElementById("cLen").addEventListener("change", function(){
+      //document.getElementById("alphaFix").checked = false;
+      let oldtri = tri; tri.undraw();
+      let fixed = getFixed(this.id);
+      console.log('fixed', fixed);
+
+      if (fixed.alphaFix) {
+        tri = getRightTriangle({
+          alpha: tri.alpha,
+          c: parseFloat(this.value),
+          pos: tri.pos
+        })
+      }
+      if (fixed.thetaFix) {
+        tri = getRightTriangle({
+          theta: tri.theta,
+          c: parseFloat(this.value),
+          pos: tri.pos
+        })
+      }
+      if (fixed.aFix) {
+        tri = getRightTriangle({
+          a: tri.a,
+          c: parseFloat(this.value),
+          pos: tri.pos
+        })
+      }
+      else {
+        tri = getRightTriangle({
+          b: tri.b,
+          c: parseFloat(this.value),
+          pos: tri.pos
+        })
+        console.log(tri);
+      }
+      tri.draw(oldtri.svg, oldtri.drawArguments);
+      updateInputs(this.id);
+    })
+
+
+    document.getElementById("alphaShow").addEventListener("change", function(){
+      tri.drawArguments.showAngleLabels[1] = this.checked;
+      redraw();
+    })
+    document.getElementById("thetaShow").addEventListener("change", function(){
+      tri.drawArguments.showAngleLabels[2] = this.checked;
+      redraw();
+    })
+
+    document.getElementById("alphaArc").addEventListener("change", function(){
+      tri.drawArguments.showAngleArcs[1] = this.checked;
+      redraw();
+    })
+    document.getElementById("thetaArc").addEventListener("change", function(){
+      tri.drawArguments.showAngleArcs[2] = this.checked;
+      redraw();
+    })
+
+    document.getElementById("aLenShow").addEventListener("change", function(){
+      tri.drawArguments.labelSides[0] = this.checked;
+      redraw();
+    })
+    document.getElementById("bLenShow").addEventListener("change", function(){
+      tri.drawArguments.labelSides[2] = this.checked;
+      redraw();
+    })
+    document.getElementById("cLenShow").addEventListener("change", function(){
+      tri.drawArguments.labelSides[1] = this.checked;
+      redraw();
+    })
+
+    document.getElementById("copySVG").addEventListener("click", function(){
+      // contents = document.getElementById("diagram").innerHTML;
+      // console.log("contents", contents);
+      // navigator.clipboard.writeText(contents);
+      svg.copySVG();
+    })
+
+
+  </script>
+
+
+
+</html>

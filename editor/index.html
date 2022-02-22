@@ -14,14 +14,24 @@
       #drawingArea {
         border: 1px solid black;
         width: 95%;
+        grid-column: 1;
+        grid-row: 2 / 4;
       }
       #codeArea {
         border: 1px solid black;
         width: 95%;
         height: 20em;
+        grid-column: 2;
+        grid-row: 3 ;
       }
       #svgTextArea {
         font-size: 0.5em;
+        grid-column: 1;
+        grid-row: 6;
+      }
+      #inputArea {
+        grid-column: 2;
+        grid-row: 1;
       }
 
 
@@ -33,7 +43,7 @@
     <div class="">
       Using <a href="https://github.com/kazzkiq/CodeFlask">codeflask</a> editor.
     </div>
-    <div>
+    <div id="inputArea">
       <input type="button" id="drawButton" value="Draw">
     </div>
     <div id="drawingArea">
