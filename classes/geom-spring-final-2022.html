@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>SVG Test</title>
+
+    <script type="text/javascript" src="../uSvg.js"></script>
+
+    <style media="screen">
+      body {
+        background-color: lightgreen;
+      }
+      svg {
+        border: 1px solid black;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Graphing SVG Test</h1>
+
+
+
+        <script type="text/javascript" id="v0">
+          svg = new uSvgGraph({elementInfo:{width:300,height:300, style:'border:5px solid black;'}});
+          line1 = new uLine(-2, -3);
+          console.log("line1:", line1.eqnAsText());
+          svg.drawLinearFunction(line1, {style:{stroke:"#0000ff"}});
+          p1 = new uPoint(-3,-5);
+          p2 = new uPoint(2, 5);
+          svg.drawPoints([p1, p2], r=0.1);
+          line2 = svg.get_uLine_from_two_points(p1, p2);
+          console.log("line2:", line2.eqnAsText());
+          // pIntersect = svg.get_intersection_of_two_uLines(line1, line2);
+          // console.log(pIntersect);
+          // svg.labelPoint(p2);
+          // svg.labelLinearFunction(line1, {x:4, offset:new uPoint(0.5,0.5)});
+          //
+          // line3 = svg.get_uLine_from_two_points(new uPoint(3,6), new uPoint(-6,-1));
+          // line4 = svg.get_uLine_from_two_points(new uPoint(3,6), new uPoint(-6,8));
+          // console.log('l5');
+          // line5 = svg.get_uLine_from_two_points(new uPoint(3,-9), new uPoint(-6,-1));
+          //
+          // console.log(line1.perpSlope());
+          // linePerp = svg.get_uLine_from_slope_and_point(line1.perpSlope(), p2);
+          // console.log(linePerp.eqnAsText());
+
+        </script>
+
+
+        <script type="text/javascript" id="v0">
+          svg = new uSvgGraph({elementInfo:{width:300,height:300, style:'border:5px solid black;'}});
+          line1 = new uLine(-3, -4);
+          console.log("B line1:", line1.eqnAsText());
+          svg.drawLinearFunction(line1, {style:{stroke:"#0000ff"}});
+          line2 = new uLine(1, 4);
+          svg.drawLinearFunction(line2, {style:{stroke:"#0000ff"}});
+          console.log("B line2:", line2.eqnAsText());
+          pIntersect = svg.get_intersection_of_two_uLines(line1, line2);
+          console.log(pIntersect);
+          svg.labelPoint(pIntersect);
+        </script>
+
+        <script type="text/javascript" id="v0">
+          svg = new uSvgGraph({elementInfo:{width:300,height:300, style:'border:5px solid black;'}});
+          line1 = new uLine(-2, -3);
+          console.log("B line1:", line1.eqnAsText());
+          svg.drawLinearFunction(line1, {style:{stroke:"#0000ff"}});
+          line2 = new uLine(1, 6);
+          svg.drawLinearFunction(line2, {style:{stroke:"#0000ff"}});
+          console.log("B line2:", line2.eqnAsText());
+          pIntersect = svg.get_intersection_of_two_uLines(line1, line2);
+          console.log(pIntersect);
+          svg.labelPoint(pIntersect);
+        </script>
+
+
+        <script type="text/javascript" id="v0">
+          svg = new uSvg({elementInfo:{width:300,height:300, style:'border:5px solid black;'}});
+          p1 = new uPoint(2,5);
+          p2 = new uPoint(19, 10);
+          svg.drawPoints([p1, p2], {style:{r:0.1}});
+          svg.addLine(p1,p2,{style:{"stroke-width":2}});
+
+        </script>
+
+        <script type="text/javascript" id="v0">
+          svg = new uSvg({elementInfo:{width:300,height:300, style:'border:5px solid black;'}});
+          p1 = new uPoint(2,5);
+          p2 = new uPoint(18, 8);
+
+          p3 = new uPoint(2,10);
+          p4 = new uPoint(18, 13);
+          svg.addLine(p1, p2, {style:{"stroke-width":2}});
+          svg.addLine(p3, p4, {style:{"stroke-width":2}});
+
+          p5 = new uPoint(4,19);
+          p6 = new uPoint(10,2);
+          svg.addLine(p5, p6, {style:{"stroke-width":2}});
+
+          p7 = new uPoint(10,19);
+          p8 = new uPoint(16,2);
+          svg.addLine(p7, p8, {style:{"stroke-width":2}});
+
+
+        </script>
+
+
+        <script type="text/javascript" id="v5">
+          svg = new uSvg({elementInfo:{width:300,height:300, style:'border:5px solid black;'}});
+          p1 = new uPoint(1,2);
+          p2 = new uPoint(8,7);
+
+          p3 = new uPoint(1,6);
+          p4 = new uPoint(7,2);
+          svg.addLine(p1, p2, {style:{"stroke-width":2}});
+          svg.addLine(p3, p4, {style:{"stroke-width":2}});
+
+          pInt = new uPoint(4,5);
+          svg.addText('2x+1', pInt, {style:{'font-size': '10px'}});
+          pInt = new uPoint(6,4);
+          svg.addText('3x+4', pInt, {style:{'font-size': '10px'}});
+
+          // p5 = new uPoint(4,19);
+          // p6 = new uPoint(10,2);
+          // svg.addLine(p5, p6, {style:{"stroke-width":2}});
+          //
+          // p7 = new uPoint(10,19);
+          // p8 = new uPoint(16,2);
+          // svg.addLine(p7, p8, {style:{"stroke-width":2}});
+
+
+        </script>
+
+
+        <script type="text/javascript" id="v5">
+          svg = new uSvgGraph({elementInfo:{width:300,height:300, style:'border:5px solid black;'}});
+          p1 = new uPoint(1,2);
+          p2 = new uPoint(8,7);
+
+          p3 = new uPoint(1,6);
+          p4 = new uPoint(7,2);
+
+          svg.addPolyline([p1,p2,p3,p1], {style:{"stroke-width":2}});
+
+
+        </script>
+
+        <script type="text/javascript" id="v5">
+          svg = new uSvgGraph({elementInfo:{width:300,height:300, style:'border:5px solid black;'}});
+          p1 = new uPoint(3,5);
+
+          svg.drawPoints([p1,], r=0.1);
+          offset = new uPoint(1,1);
+          svg.addText("A", p1.addxy(.5,.5) );
+
+
+        </script>
+
+        <script type="text/javascript" id="v5">
+          svg = new uSvgGraph({elementInfo:{width:300,height:300, style:'border:5px solid black;'}});
+          p1 = new uPoint(2,5);
+          p2 = new uPoint(-5,2);
+
+          p3 = new uPoint(-2,-5);
+          p4 = new uPoint(7,2);
+
+          svg.addPolyline([p1,p2,p3,p1], {style:{"stroke-width":2}});
+
+
+        </script>
+
+        <script type="text/javascript" id="v5">
+          svg = new uSvg({elementInfo:{width:300,height:300, style:'border:5px solid black;'}});
+          p1 = new uPoint(1, 1);
+          p2 = new uPoint(8, 3);
+
+          p3 = new uPoint(5,5);
+          p4 = new uPoint(7,2);
+
+          svg.addPolyline([p1,p2,p3,p1], {style:{"stroke-width":2}});
+
+
+        </script>
+
+
+  </body>
+
+</html>

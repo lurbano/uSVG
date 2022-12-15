@@ -186,6 +186,45 @@
 
         </script>
 
+        <script type="text/javascript" id="v0">
+        svg = new uSvgGraph({elementInfo:{width:400,height:400}, axesInfo:{showAxes:false}});
+
+        p1 = new uPoint(-5, -4);
+        p4 = new uPoint(-2, 2);
+        p2 = new uPoint(-3, -8);
+        p3 = new uPoint(4, 6);
+
+        tri = getRightTriangle({
+                  alpha:30,
+                  a:12,
+                  pos: new uPoint(-5,-5)
+                });
+        //poly.drawPoints(svg);
+        tri.draw(svg,
+        {
+          showAngleLabels: [true, true, true],
+          showAngleArcs: [true, true, true],
+          angleLabels: ["use_angle", "3x - 9", "use_angle"],
+          angleLabelRounding: [1, 1, 1],
+          angle_arc_r: [1, 4, 3],
+          angleFontStyle: {'font-size': '0.8em'},
+          labelSides: [false, false, false],
+          sideLabels: ["a", "use_length", "use_length"],
+          sideLabelOffset: [0.5, 0.75, 0.5]
+        });
+        tri.rotate(70);
+        //poly.drawAngleArc({r:2});
+
+
+          //tri.translate(new uPoint(-3,-1), draw=true);
+
+          //poly.rotate(10);
+
+
+          //svg.drawPoint(new uPoint());
+
+        </script>
+
 
 
       <h3>Rhombus</h3>
