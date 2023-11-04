@@ -1640,6 +1640,58 @@ class uRegularPolygon{
 
 }
 
+
+class hexGrid{
+  constructor({svg=undefined, sideLength=1, rSpacing=4, nCircles=2}={}){
+    //rSpacing is the distance between hexes in each circle
+    this.sideLength = sideLength;
+    this.rSpacing = rSpacing;
+    this.nCircles = nCircles;
+    this.svg = svg;
+
+    this.hexCircles = [];
+    this.hexCircles.push([this.getHex()]); //first hex
+    console.log("hexCircles 1:", this.hexCircles);
+    for (let i = 1; i<=nCircles; i++){
+      console.log("i:", i);
+      this.hexCircles.push([]);
+      let nHexes = i*6;
+      console.log("nHexes", nHexes);
+      for (let j = 0; j < nHexes; j++){
+        let dAngle =  (2*Math.PI/nHexes);
+        let y = this.rSpacing * i * Math.cos(dAngle*j);
+        let x = this.rSpacing * i * Math.sin(dAngle*j);
+        
+        this.hexCircles[i].push(this.getHex(new uPoint(x,y)));
+        console.log("j:", j);
+      }
+    }
+    console.log(this.hexCircles);
+
+    //this.hexCircles[0][0].drawPolygon(this.svg);
+    for (let circ of this.hexCircles){
+      for (let hex of circ){
+        hex.drawPolygon(this.svg, {style:{fill:"red"}});
+      }
+    }
+
+  }
+
+  getHex(pos=new uPoint()){
+    let hex = new uRegularPolygon({
+      sideLength: this.sideLength,
+      pos: pos
+    })
+    return hex
+  }
+
+}
+
+
+
+
+
+
 class fractalDragon{
   constructor(dx=0.25, iterations=5){
     this.dx = dx;
