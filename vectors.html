@@ -4,7 +4,9 @@
     <meta charset="utf-8">
     <title>SVG Test</title>
 
-    <script type="text/javascript" src="./uSvg.js"></script>
+    <!-- <script src="./svg-pan-zoom.min.js"></script> -->
+
+    <script type="text/javascript" src="./uSvg-0.4.js"></script>
 
     <style media="screen">
       svg {
@@ -40,26 +42,23 @@
 
       <div class="uGraph">
         <script type="text/javascript">
-          svg = new uSvgGraph({
+          svg_poly = new uSvgGraph({
+            elementInfo:{width:500,height:500},
+            axesInfo:{showAxes:false}
+          });
+
+          svg_poly.drawPoint(new uPoint());
+
+        </script>
+      </div>
+
+      <div class="uGraph">
+        <script type="text/javascript">
+          svg_vec = new uSvgGraph({
             elementInfo:{width:500,height:500}
           });
 
           p0 = new uPoint();
-
-        //   p1 = new uPoint();
-        //   v1 = new uVector(p1, new uPoint(1,5));
-        //   svg.addArrow(v1);
-        //   p2 = p1.add(v1.v);
-        //   v2 = new uVector(p2, new uPoint(4, -3));
-        //   svg.addArrow(v2);
-        //   p3 = p2.add(v2.v);
-        //   v3 = new uVector(p3, new uPoint(2, 2));
-        //   svg.addArrow(v3);
-        //   p4 = p3.add(v3.v);
-        //   v4 = new uVector(p4, new uPoint(-8, 3));
-        //   svg.addArrow(v4);
-
-
 
         </script>
       </div>
@@ -71,6 +70,8 @@
   <script>
 
     vectors = [];
+    poly = new uPolyLine({pts:[new uPoint()]});
+    poly.draw(svg_poly);
 
     addVecButton.addEventListener("click", function(){
         let mag = vec_mag.value;
@@ -88,7 +89,14 @@
 
         vec = get_uVector_from_MagAngle(pos=lastVec.endpt, mag=mag, theta=theta);
         vectors.push(vec);
-        svg.addArrow(vec);
+        console.log("vec:", vec);
+        svg_vec.addArrow(vec);
+
+        // s = new uPolyLine({pts:[vec.pos, vec.endpt]});
+        // console.log("s:", s);
+        // s.draw(svg_poly);
+        poly.addPt(vec.endpt);
+        console.log("poly", poly);
 
         let vText = `${mag} at ${angle_deg}°`;
         let vDiv = document.createElement("div");

@@ -1049,12 +1049,18 @@ function get_uLine_from_slope_and_point(m = 1, pt = new uPoint(1,1)){
 
 
 class uVector{
-  constructor(pos = new uPoint(), v = new uPoint(1,1)){
+  constructor(pos = new uPoint(), v = new uPoint()){
     this.pos = pos; this.v = v;
     this.endpt = this.pos.add(this.v);
   }
 }
+function get_uVector_from_MagAngle(pos=new uPoint(), mag=1, theta=0){
+  let x = mag * Math.cos(theta);
+  let y = mag * Math.sin(theta);
+  console.log(x, y);
+  return new uVector(pos=pos, new uPoint(x,y));
 
+}
 
 class uVertex{
   constructor(vertex = [new uPoint(1,0), new uPoint(0,0), new uPoint(0,1)]){
@@ -1175,6 +1181,12 @@ class uPolyLine{
     let pts = [...this.pts, ...p.pts];
     return new uPolyLine({pts:pts});
   }
+  addPt(pt= new uPoint()){
+    this.pts.push(pt);
+    this.remove();
+    this.draw(this.svg);
+  }
+
   moveStartTo(x,y){
     let dx = x - this.pts[0].x;
     let dy = y - this.pts[0].y;
