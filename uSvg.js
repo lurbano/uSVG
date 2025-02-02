@@ -920,11 +920,19 @@ class uQuadratic{
 }
 
 class uVector{
-  constructor(pos = new uPoint(), v = new uPoint(1,1)){
+  constructor(pos = new uPoint(), v = new uPoint()){
     this.pos = pos; this.v = v;
     this.endpt = this.pos.add(this.v);
   }
 }
+function get_uVector_from_MagAngle(pos=new uPoint(), mag=1, theta=0){
+  let x = mag * Math.cos(theta);
+  let y = mag * Math.sin(theta);
+  console.log(x, y);
+  return new uVector(pos=pos, new uPoint(x,y));
+
+}
+
 
 class uRightTriangle{
   constructor(a, b){

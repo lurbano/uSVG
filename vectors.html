@@ -17,20 +17,23 @@
     <h1>Drawing Vectors</h1>
 
     <p>
-      v1 = <span class="" id="v1"></span><br>
-      m1 = <span class="" id="m1"></span>
-    </p>
-    <p>
-      v2 = <span class="" id="v2"></span><br>
-      m2 = <span class="" id="m2"></span>
+      Vector: 
+      <div class="vec_mag_angle">
+        <label for="vec_mag">Magnitude</label>
+        <input type="number" id="vec_mag" value="5" >
+
+        <label for="vec_mag">Direction (°)</label>
+        <input type="number" id="vec_angle" value="30">°
+        
+      </div>
+
+      <input type="button" value="Add Vector" id="addVecButton">
     </p>
 
-    <p>
-      v_after = <span class="" id="v_after"></span><br>
-      m_after = <span class="" id="m_after"></span>
-    </p>
+    <div id="vec_list">
 
-      </span>
+    </div>
+
       <br>
 
 
@@ -41,18 +44,20 @@
             elementInfo:{width:500,height:500}
           });
 
-          p1 = new uPoint();
-          v1 = new uVector(p1, new uPoint(1,5));
-          svg.addArrow(v1);
-          p2 = p1.add(v1.v);
-          v2 = new uVector(p2, new uPoint(4, -3));
-          svg.addArrow(v2);
-          p3 = p2.add(v2.v);
-          v3 = new uVector(p3, new uPoint(2, 2));
-          svg.addArrow(v3);
-          p4 = p3.add(v3.v);
-          v4 = new uVector(p4, new uPoint(-8, 3));
-          svg.addArrow(v4);
+          p0 = new uPoint();
+
+        //   p1 = new uPoint();
+        //   v1 = new uVector(p1, new uPoint(1,5));
+        //   svg.addArrow(v1);
+        //   p2 = p1.add(v1.v);
+        //   v2 = new uVector(p2, new uPoint(4, -3));
+        //   svg.addArrow(v2);
+        //   p3 = p2.add(v2.v);
+        //   v3 = new uVector(p3, new uPoint(2, 2));
+        //   svg.addArrow(v3);
+        //   p4 = p3.add(v3.v);
+        //   v4 = new uVector(p4, new uPoint(-8, 3));
+        //   svg.addArrow(v4);
 
 
 
@@ -62,5 +67,35 @@
 
 
   </body>
+
+  <script>
+
+    vectors = [];
+
+    addVecButton.addEventListener("click", function(){
+        let mag = vec_mag.value;
+        let angle_deg = vec_angle.value;
+        let theta = angle_deg * Math.PI / 180;
+        console.log("vec:", mag, theta);
+
+        //add vector to vector list on page:
+        //let vec = new uVector(p0, new uPoint(mag, dir))
+        if (vectors.length > 0){
+            lastVec = vectors[vectors.length-1];
+        } else {
+            lastVec = new uVector();
+        }
+
+        vec = get_uVector_from_MagAngle(pos=lastVec.endpt, mag=mag, theta=theta);
+        vectors.push(vec);
+        svg.addArrow(vec);
+
+        let vText = `${mag} at ${angle_deg}°`;
+        let vDiv = document.createElement("div");
+        vDiv.innerHTML = vText;
+        vec_list.appendChild(vDiv);
+    })
+
+  </script>
 
 </html>
