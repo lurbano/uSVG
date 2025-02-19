@@ -1057,7 +1057,7 @@ class uVector{
 function get_uVector_from_MagAngle(pos=new uPoint(), mag=1, theta=0){
   let x = mag * Math.cos(theta);
   let y = mag * Math.sin(theta);
-  console.log(x, y);
+  //console.log(x, y);
   return new uVector(pos=pos, new uPoint(x,y));
 
 }
@@ -1067,7 +1067,7 @@ class magAngleVec{
     this.mag = mag; this.angle = angle; this.vec_name = vec_name;
   }
   uVec(pos= new uPoint()){
-    console.log(this.vec_name, this.mag, this.angle);
+    //console.log(this.vec_name, this.mag, this.angle);
     return get_uVector_from_MagAngle(pos, this.mag, this.angle * Math.PI / 180);
   }
 }
@@ -1130,9 +1130,11 @@ class uVertex{
 
 class uPolyLine{
   constructor({
+                svg = undefined,
                 pts = [], //uPoints array
                 segs = [], //uLineSegments array
               }){
+    this.svg = svg;
     this.pts = pts;
     this.segs = segs;
   }
@@ -1779,8 +1781,8 @@ class monotile{
   draw_poly(svg){
     this.set_vectors();
     //let vectors = [];
-    this.poly = new uPolyLine({pts:[new uPoint()]});
-    this.poly.draw(svg);
+    this.poly = new uPolyLine({svg:svg, pts:[new uPoint()]});
+    //this.poly.draw(svg);
 
     let lastPos = new uPoint();
       
@@ -1809,4 +1811,21 @@ class monotile{
     }
   }
 
+}
+
+function isNumber(value) {
+  return typeof value === 'number' && isFinite(value);
+}
+
+function str2Num(n){
+  // e.g. n = "sqrt2"
+  console.log("n:", n)
+  let operation = n.substring(0,4);
+  let num = parseFloat(n.substring(4));
+
+  if (operation === "sqrt"){
+      num = Math.sqrt(num);
+  }
+  //console.log("str2Num:", operation, num);
+  return num;
 }
