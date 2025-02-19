@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title>SVG Test</title>
+    <title>Monotile</title>
 
     <!-- <script src="./svg-pan-zoom.min.js"></script> -->
 
@@ -39,6 +39,18 @@
 
       <div class="uGraph">
         <script type="text/javascript">
+          svg_poly = new uSvgGraph({
+            elementInfo:{width:500,height:500},
+            axesInfo:{showAxes:false,xmax:10, ymax:10}
+          });
+
+          //svg_poly.drawPoint(new uPoint());
+
+        </script>
+      </div>
+
+      <div class="uGraph">
+        <script type="text/javascript">
           svg_vec = new uSvgGraph({
             elementInfo:{width:500,height:500}
           });
@@ -48,17 +60,7 @@
         </script>
       </div>
 
-      <div class="uGraph">
-        <script type="text/javascript">
-          svg_poly = new uSvgGraph({
-            elementInfo:{width:500,height:500},
-            axesInfo:{showAxes:false,xmax:100, ymax:100}
-          });
 
-          svg_poly.drawPoint(new uPoint());
-
-        </script>
-      </div>
 
   </body>
 
@@ -84,20 +86,26 @@
     ]
 
     vectors = [];
-    poly = new uPolyLine({pts:[new uPoint()]});
-    poly.draw(svg_poly);
+    //poly = new uPolyLine({pts:[new uPoint()]});
+    //poly.draw(svg_poly);
 
+    mTile = new monotile({a: 1, b: Math.sqrt(3)}); // hat
     
-    drawTile.addEventListener("click", function(){
-      let lastPos = new uPoint();
+    mTile.draw_poly(svg_poly);
+    mTile.draw_vectors(svg_vec);
+    
+    // drawTile.addEventListener("click", function(){
+    //   let lastPos = new uPoint();
       
-      for (let vec of hat_vectors){
-        let v = vec.uVec(lastPos);
-        vectors.push(v);
-        svg_vec.addArrow(v);
-        lastPos = v.endpt;
-      }
-    })
+    //   for (let vec of hat_vectors){
+    //     let v = vec.uVec(lastPos);
+    //     vectors.push(v);
+    //     svg_vec.addArrow(v);
+    //     lastPos = v.endpt;
+
+    //     poly.addPt(lastPos);
+    //   }
+    // })
       
 
     // addVecButton.addEventListener("click", function(){

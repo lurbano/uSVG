@@ -1744,3 +1744,69 @@ class fractalDragon{
     }
   }
 }
+
+
+class monotile{
+  constructor({a=1, b=1.73205080757}={}){
+    //default is hat
+    this.a = a;
+    this.b = b;
+    this.set_vectors();
+
+  }
+
+  set_vectors(){
+    let a = this.a;
+    let b = this.b;
+    this.vectors = [
+      new magAngleVec(a, 0, "AB"),
+      new magAngleVec(a, 0, "BC"),
+      new magAngleVec(a, 60, "CD"),
+      new magAngleVec(b, 150, "DE"),
+      new magAngleVec(b, 90, "EF"),
+      new magAngleVec(a, 180, "FG"),
+      new magAngleVec(a, 120, "GH"),
+      new magAngleVec(b, 210, "HI"),
+      new magAngleVec(b, 270, "IJ"),
+      new magAngleVec(a, 180, "JK"),
+      new magAngleVec(a, 240, "KL"),
+      new magAngleVec(b, 330, "LM"),
+      new magAngleVec(b, 30, "MN"),
+      new magAngleVec(a, 300, "NA")
+    ]
+  }
+
+  draw_poly(svg){
+    this.set_vectors();
+    //let vectors = [];
+    this.poly = new uPolyLine({pts:[new uPoint()]});
+    this.poly.draw(svg);
+
+    let lastPos = new uPoint();
+      
+    for (let vec of this.vectors){
+      let v = vec.uVec(lastPos);
+      //vectors.push(v);
+      //svg_vec.addArrow(v);
+      lastPos = v.endpt;
+
+      this.poly.addPt(lastPos);
+    }
+
+    this.poly.draw(svg);
+  }
+
+  draw_vectors(svg){
+
+    let lastPos = new uPoint();
+      
+    for (let vec of this.vectors){
+      let v = vec.uVec(lastPos);
+      //vectors.push(v);
+      svg.addArrow(v);
+      lastPos = v.endpt;
+
+    }
+  }
+
+}
