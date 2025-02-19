@@ -20,6 +20,10 @@
 
     <p>
       Parameters: 
+      Presets: 
+        <input type="button" value="Hat" id="hat_button">
+        <input type="button" value="Turtle" id="turtle_button">
+        <input type="button" value="Charial" id="chiral_button">
       <div class="vec_mag_angle">
         <label for="side_a">a</label>
         <input type="number" id="side_a" value="1" >
@@ -66,33 +70,29 @@
 
   <script>
 
-    sqr3 = Math.sqrt(3);
+    hat_button.addEventListener("click", ()=>{
+      side_a.value = 1;
+      side_b.value = Math.sqrt(3);
+    })
+    turtle_button.addEventListener("click", ()=>{
+      side_a.value = Math.sqrt(3);
+      side_b.value = 1;
+    })
+    chiral_button.addEventListener("click", ()=>{
+      side_a.value = 1;
+      side_b.value = 1;
+    })
 
-    hat_vectors = [
-      new magAngleVec(1, 0, "AB"),
-      new magAngleVec(1, 0, "BC"),
-      new magAngleVec(1, 60, "CD"),
-      new magAngleVec(sqr3, 150, "DE"),
-      new magAngleVec(sqr3, 90, "EF"),
-      new magAngleVec(1, 180, "FG"),
-      new magAngleVec(1, 120, "GH"),
-      new magAngleVec(sqr3, 210, "HI"),
-      new magAngleVec(sqr3, 270, "IJ"),
-      new magAngleVec(1, 180, "JK"),
-      new magAngleVec(1, 240, "KL"),
-      new magAngleVec(sqr3, 330, "LM"),
-      new magAngleVec(sqr3, 30, "MN"),
-      new magAngleVec(1, 300, "NA")
-    ]
-
-    vectors = [];
-    //poly = new uPolyLine({pts:[new uPoint()]});
-    //poly.draw(svg_poly);
-
-    mTile = new monotile({a: 1, b: Math.sqrt(3)}); // hat
+    drawTile.addEventListener("click", function(){
+      let a = side_a.value;
+      let b = side_b.value;
+      let mTile = new monotile({a: a, b: b}); // hat
     
-    mTile.draw_poly(svg_poly);
-    mTile.draw_vectors(svg_vec);
+      mTile.draw_poly(svg_poly);
+      mTile.draw_vectors(svg_vec);
+    })
+
+    
     
     // drawTile.addEventListener("click", function(){
     //   let lastPos = new uPoint();
@@ -108,37 +108,6 @@
     // })
       
 
-    // addVecButton.addEventListener("click", function(){
-    //     let mag = vec_mag.value;
-    //     let angle_deg = vec_angle.value;
-    //     let theta = angle_deg * Math.PI / 180;
-    //     console.log("vec:", mag, theta);
-
-    //     //add vector to vector list on page:
-    //     //let vec = new uVector(p0, new uPoint(mag, dir))
-    //     if (vectors.length > 0){
-    //         lastVec = vectors[vectors.length-1];
-    //     } else {
-    //         lastVec = new uVector();
-    //     }
-
-    //     vec = get_uVector_from_MagAngle(pos=lastVec.endpt, mag=mag, theta=theta);
-    //     vectors.push(vec);
-    //     console.log("vec:", vec);
-    //     svg_vec.addArrow(vec);
-
-    //     // s = new uPolyLine({pts:[vec.pos, vec.endpt]});
-    //     // console.log("s:", s);
-    //     // s.draw(svg_poly);
-    //     poly.addPt(vec.endpt);
-    //     console.log("poly", poly);
-
-    //     // put vector info on page
-    //     let vText = `${mag} at ${angle_deg}°`;
-    //     let vDiv = document.createElement("div");
-    //     vDiv.innerHTML = vText;
-    //     vec_list.appendChild(vDiv);
-    // })
 
   </script>
 
