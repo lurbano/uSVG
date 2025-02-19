@@ -1062,6 +1062,16 @@ function get_uVector_from_MagAngle(pos=new uPoint(), mag=1, theta=0){
 
 }
 
+class magAngleVec{
+  constructor(mag=1, angle=0, vec_name = ""){
+    this.mag = mag; this.angle = angle; this.vec_name = vec_name;
+  }
+  uVec(pos= new uPoint()){
+    console.log(this.vec_name, this.mag, this.angle);
+    return get_uVector_from_MagAngle(pos, this.mag, this.angle * Math.PI / 180);
+  }
+}
+
 class uVertex{
   constructor(vertex = [new uPoint(1,0), new uPoint(0,0), new uPoint(0,1)]){
     this.vertex = vertex;

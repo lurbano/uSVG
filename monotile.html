@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>SVG Test</title>
+
+    <!-- <script src="./svg-pan-zoom.min.js"></script> -->
+
+    <script type="text/javascript" src="./uSvg-0.4.js"></script>
+
+    <style media="screen">
+      svg {
+        border: 1px solid black;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Drawing Vectors</h1>
+
+    <p>
+      Parameters: 
+      <div class="vec_mag_angle">
+        <label for="side_a">a</label>
+        <input type="number" id="side_a" value="1" >
+
+        <label for="side_b">b</label>
+        <input type="number" id="side_b" value="1.73205080757">
+        
+      </div>
+
+      <input type="button" value="Draw" id="drawTile">
+    </p>
+
+    <div id="vec_list"></div>
+
+      <br>
+
+
+      <div class="uGraph">
+        <script type="text/javascript">
+          svg_vec = new uSvgGraph({
+            elementInfo:{width:500,height:500}
+          });
+
+          p0 = new uPoint();
+
+        </script>
+      </div>
+
+      <div class="uGraph">
+        <script type="text/javascript">
+          svg_poly = new uSvgGraph({
+            elementInfo:{width:500,height:500},
+            axesInfo:{showAxes:false,xmax:100, ymax:100}
+          });
+
+          svg_poly.drawPoint(new uPoint());
+
+        </script>
+      </div>
+
+  </body>
+
+  <script>
+
+    sqr3 = Math.sqrt(3);
+
+    hat_vectors = [
+      new magAngleVec(1, 0, "AB"),
+      new magAngleVec(1, 0, "BC"),
+      new magAngleVec(1, 60, "CD"),
+      new magAngleVec(sqr3, 150, "DE"),
+      new magAngleVec(sqr3, 90, "EF"),
+      new magAngleVec(1, 180, "FG"),
+      new magAngleVec(1, 120, "GH"),
+      new magAngleVec(sqr3, 210, "HI"),
+      new magAngleVec(sqr3, 270, "IJ"),
+      new magAngleVec(1, 180, "JK"),
+      new magAngleVec(1, 240, "KL"),
+      new magAngleVec(sqr3, 330, "LM"),
+      new magAngleVec(sqr3, 30, "MN"),
+      new magAngleVec(1, 300, "NA")
+    ]
+
+    vectors = [];
+    poly = new uPolyLine({pts:[new uPoint()]});
+    poly.draw(svg_poly);
+
+    
+    drawTile.addEventListener("click", function(){
+      let lastPos = new uPoint();
+      
+      for (let vec of hat_vectors){
+        let v = vec.uVec(lastPos);
+        vectors.push(v);
+        svg_vec.addArrow(v);
+        lastPos = v.endpt;
+      }
+    })
+      
+
+    // addVecButton.addEventListener("click", function(){
+    //     let mag = vec_mag.value;
+    //     let angle_deg = vec_angle.value;
+    //     let theta = angle_deg * Math.PI / 180;
+    //     console.log("vec:", mag, theta);
+
+    //     //add vector to vector list on page:
+    //     //let vec = new uVector(p0, new uPoint(mag, dir))
+    //     if (vectors.length > 0){
+    //         lastVec = vectors[vectors.length-1];
+    //     } else {
+    //         lastVec = new uVector();
+    //     }
+
+    //     vec = get_uVector_from_MagAngle(pos=lastVec.endpt, mag=mag, theta=theta);
+    //     vectors.push(vec);
+    //     console.log("vec:", vec);
+    //     svg_vec.addArrow(vec);
+
+    //     // s = new uPolyLine({pts:[vec.pos, vec.endpt]});
+    //     // console.log("s:", s);
+    //     // s.draw(svg_poly);
+    //     poly.addPt(vec.endpt);
+    //     console.log("poly", poly);
+
+    //     // put vector info on page
+    //     let vText = `${mag} at ${angle_deg}°`;
+    //     let vDiv = document.createElement("div");
+    //     vDiv.innerHTML = vText;
+    //     vec_list.appendChild(vDiv);
+    // })
+
+  </script>
+
+</html>
