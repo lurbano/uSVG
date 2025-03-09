@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+</head>
+<body>
+    Hi
+</body>
+
+<script>
+    class Vector {
+        constructor(x,y) {
+            this.x = x;
+            this.y = y;
+            console.log("Vector:", x, y);
+        }
+    }
+
+    class Vector_MA {
+        constructor(mag, angle){
+            this.mag = mag;
+            this.angle = angle;
+        }
+    }
+
+    // first vector for kite
+    AB = new Vector(0.866, 1.5);
+
+    svg = document.createElement("SVG");
+    svg.setAttribute("width", "200");
+    svg.setAttribute("height", "200");
+    // svg.setAttribute("border", "1px solid black");
+
+    // document.getElementById("diagram").appendChild(svg);
+
+</script>
+</html>

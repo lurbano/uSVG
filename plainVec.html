@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        Hello
+
+    </body>
+
+<script>
+class Vector {
+            constructor(x,y) {
+                this.x = x;
+                this.y = y;
+                console.log("Vector:", x, y);
+            }
+
+            scale(scale_factor){
+                this.x = this.x * scale_factor;
+                this.y = this.y * scale_factor;
+            }
+
+            drawLine(svg, start_vector){
+
+                let x1 = start_vector.x;
+                let y1 = start_vector.y;
+                let w = svg.getAttribute("width");
+                let h = svg.getAttribute("height");
+                this.line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+
+                this.line.setAttribute("x1", x1);
+                this.line.setAttribute("y1", h - y1);
+                this.line.setAttribute("x2", x1 + this.x);
+                this.line.setAttribute("y2", h - y1 - this.y);
+
+                // this.line.setAttribute("x1", 0);
+                // this.line.setAttribute("y1", 0);
+                // this.line.setAttribute("x2", this.x);
+                // this.line.setAttribute("y2", this.y);
+                this.line.setAttribute("stroke", "black");
+                svg.appendChild(this.line);
+            }
+        }
+
+        function MA_vector(mag, angle){
+            let x = mag * Math.cos(this.angle);
+            let y = mag * Math.sin(this.angle);
+            return new Vector(x,y);
+        }
+        // class Vector_MA {
+        //     constructor(mag, angle){
+        //         this.mag = mag;
+        //         this.angle = angle;
+        //     }
+
+        //     xy() {
+        //         this.x = this.mag * Math.cos(this.angle);
+        //         this.y = this.mag * Math.sin(this.angle);
+        //         return new Vector(vx, vy);
+        //     }
+        // }
+
+        // first vector for kite
+        AB = new Vector(0.866, 1.50);
+
+        svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("width", "200");
+        svg.setAttribute("height", "200");
+
+        AB.scale(100);
+        AB.drawLine(svg, new Vector(100,0));
+
+        BC = MA_vector(1, 150);
+        BC.scale(100);
+        BC.drawLine(svg, new Vector(100,0));
+
+        document.body.appendChild(svg);
+</script>
+        
+
+
+</html>
