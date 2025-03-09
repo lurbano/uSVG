@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Monotile</title>
+
+    <!-- <script src="./svg-pan-zoom.min.js"></script> -->
+
+    <script type="text/javascript" src="./uSvg-0.4.js"></script>
+
+    <style media="screen">
+      svg {
+        border: 1px solid black;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Aperiodic Monotiles</h1>
+
+    Ref: <a href="https://cs.uwaterloo.ca/~csk/hat/">An Aperiodic Monotile by Myers et al. 2023.</a>
+
+    <p>
+      Parameters: <br>
+      Presets: 
+        <input type="button" value="Hat" id="hat_button">
+        <input type="button" value="Turtle" id="turtle_button">
+        <input type="button" value="Charial" id="chiral_button">
+      <div class="vec_mag_angle">
+        <label for="side_a">a</label>
+        <input type="number" id="side_a" value="1" >
+
+        <label for="side_b">b</label>
+        <input type="number" id="side_b" value="1.73205080757">
+        
+      </div>
+
+      <input type="button" value="Draw" id="drawTile">
+    </p>
+
+    <div id="vec_list"></div>
+
+      <br>
+
+
+      <div class="uGraph">
+        <script type="text/javascript">
+          svg_poly = new uSvgGraph({
+            elementInfo:{width:500,height:500},
+            axesInfo:{showAxes:false,xmax:10, ymax:10}
+          });
+
+          //svg_poly.drawPoint(new uPoint());
+
+        </script>
+      </div>
+
+      <div class="uGraph">
+        <script type="text/javascript">
+          svg_vec = new uSvgGraph({
+            elementInfo:{width:500,height:500}
+          });
+
+          p0 = new uPoint();
+
+        </script>
+      </div>
+
+
+
+  </body>
+
+  <script>
+
+    hat_button.addEventListener("click", ()=>{
+      side_a.value = 1;
+      side_b.value = Math.sqrt(3);
+    })
+    turtle_button.addEventListener("click", ()=>{
+      side_a.value = Math.sqrt(3);
+      side_b.value = 1;
+    })
+    chiral_button.addEventListener("click", ()=>{
+      side_a.value = 1;
+      side_b.value = 1;
+    })
+
+    drawTile.addEventListener("click", function(){
+      let a = side_a.value;
+      let b = side_b.value;
+      let mTile = new monotile({a: a, b: b}); // hat
+    
+      mTile.draw_poly(svg_poly);
+      mTile.draw_vectors(svg_vec);
+    })
+
+    
+    
+    // drawTile.addEventListener("click", function(){
+    //   let lastPos = new uPoint();
+      
+    //   for (let vec of hat_vectors){
+    //     let v = vec.uVec(lastPos);
+    //     vectors.push(v);
+    //     svg_vec.addArrow(v);
+    //     lastPos = v.endpt;
+
+    //     poly.addPt(lastPos);
+    //   }
+    // })
+      
+
+
+  </script>
+
+</html>

@@ -39,19 +39,6 @@
       <br>
 
 
-
-      <div class="uGraph">
-        <script type="text/javascript">
-          svg_poly = new uSvgGraph({
-            elementInfo:{width:500,height:500},
-            axesInfo:{showAxes:false}
-          });
-
-          svg_poly.drawPoint(new uPoint());
-
-        </script>
-      </div>
-
       <div class="uGraph">
         <script type="text/javascript">
           svg_vec = new uSvgGraph({
@@ -63,7 +50,17 @@
         </script>
       </div>
 
+      <div class="uGraph">
+        <script type="text/javascript">
+          svg_poly = new uSvgGraph({
+            elementInfo:{width:500,height:500},
+            axesInfo:{showAxes:false,xmax:100, ymax:100}
+          });
 
+          svg_poly.drawPoint(new uPoint());
+
+        </script>
+      </div>
 
   </body>
 
@@ -98,6 +95,7 @@
         poly.addPt(vec.endpt);
         console.log("poly", poly);
 
+        // put vector info on page
         let vText = `${mag} at ${angle_deg}°`;
         let vDiv = document.createElement("div");
         vDiv.innerHTML = vText;

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Monotile</title>
+
+    <!-- <script src="./svg-pan-zoom.min.js"></script> -->
+
+    <script type="text/javascript" src="../uSvg-0.4.js"></script>
+
+    <style media="screen">
+      svg {
+        /* border: 1px solid black; */
+      }
+    </style>
+
+  </head>
+  <body>
+    <!-- <h1>Aperiodic Monotiles</h1>
+
+    Ref: <a href="https://cs.uwaterloo.ca/~csk/hat/">An Aperiodic Monotile by Myers et al. 2023.</a>
+
+    <p>
+      Parameters: <br>
+      Presets: 
+        <input type="button" value="Hat" id="hat_button">
+        <input type="button" value="Turtle" id="turtle_button">
+        <input type="button" value="Charial" id="chiral_button">
+      <div class="vec_mag_angle">
+        <label for="side_a">a</label>
+        <input type="number" id="side_a" value="1" >
+
+        <label for="side_b">b</label>
+        <input type="number" id="side_b" value="1.73205080757">
+        
+      </div>
+
+      <input type="button" value="Draw" id="drawTile">
+    </p>
+
+    <div id="vec_list"></div>
+
+      <br> -->
+
+
+    <div class="uGraph" id="tile_svg"></div>
+
+
+
+  </body>
+
+  <script>
+
+    // default to hat
+    aParam = 1;
+    bParam = str2Num("sqrt3");
+
+    // url parameters
+    
+    params = new URLSearchParams(window.location.search);
+    console.log("params", params);
+    
+    if (params.has("a")) {
+        aParam = params.get("a");
+        aParam = isNumber(Number(aParam)) ? Number(aParam) : str2Num(aParam);
+    } 
+    if (params.has("b")) {
+        bParam = params.get("b");
+        bParam = isNumber(Number(bParam)) ? Number(bParam) : str2Num(bParam);
+    } 
+
+    aLen = isNumber(aParam) ? aParam : 1;
+    bLen = isNumber(bParam) ? bParam : str2Num("sqrt3");
+    
+    console.log("Len", aLen, bLen);
+
+
+
+
+
+    console.log('xLen:', aLen, bLen);
+
+
+    svg_poly = new uSvgGraph({
+            divId: "tile_svg",
+            elementInfo:{width:500,height:500},
+            axesInfo:{showAxes:false,xmax:10, ymax:10}
+          });
+
+    drawMonotile({a: aLen, b: bLen});
+
+
+    function drawMonotile({a=1, b=1}={}){
+
+        let mTile = new monotile({a: a, b: b}); // hat
+        mTile.draw_poly(svg_poly);
+    }
+
+    // function isNumber(value) {
+    //     return typeof value === 'number' && isFinite(value);
+    // }
+
+    // function str2Num(n){
+    //     // e.g. n = "sqrt2"
+    //     console.log("n:", n)
+    //     let operation = n.substring(0,4);
+    //     let num = parseFloat(n.substring(4));
+
+    //     if (operation === "sqrt"){
+    //         num = Math.sqrt(num);
+    //     }
+    //     //console.log("str2Num:", operation, num);
+    //     return num;
+    // }
+  </script>
+
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Monotile</title>
+
+    <!-- <script src="./svg-pan-zoom.min.js"></script> -->
+
+    <script type="text/javascript" src="../uSvg-0.4.js"></script>
+
+    <style media="screen">
+      svg {
+        border: 1px solid black;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Aperiodic Monotiles</h1>
+
+    Ref: <a href="https://cs.uwaterloo.ca/~csk/hat/">An Aperiodic Monotile by Myers et al. 2023.</a>
+
+    <p>
+      Parameters: <br>
+      Presets: 
+        <input type="button" value="Hat" id="hat_button">
+        <input type="button" value="Turtle" id="turtle_button">
+        <input type="button" value="Charial" id="chiral_button">
+      <div class="vec_mag_angle">
+        <label for="side_a">a</label>
+        <input type="text" id="side_a" value="1" ><br>
+
+        <label for="side_b">b</label>
+        <input type="text" id="side_b" value="1.73205080757">
+        <input type="button" value="Draw" id="drawTile">
+      
+      </div>
+
+    </p>
+
+    <div id="vec_list"></div>
+
+    <br>
+
+
+    <div class="uGraph" id="tile_svg"></div>
+    <div class="uGraph" id="tile_vec"></div>
+
+
+
+  </body>
+
+  <script>
+
+    // default to hat
+    aParam = 1;
+    bParam = str2Num("sqrt3");
+
+    // url parameters
+    
+    params = new URLSearchParams(window.location.search);
+    console.log("params", params);
+    
+    if (params.has("a")) {
+        aParam = params.get("a");
+        aParam = isNumber(Number(aParam)) ? Number(aParam) : str2Num(aParam);
+    } 
+    if (params.has("b")) {
+        bParam = params.get("b");
+        bParam = isNumber(Number(bParam)) ? Number(bParam) : str2Num(bParam);
+    } 
+
+    aLen = isNumber(aParam) ? aParam : 1;
+    bLen = isNumber(bParam) ? bParam : str2Num("sqrt3");
+
+    side_a.value = aLen;
+    side_b.value = bLen;
+
+    //mTile = new monotile({a: aLen, b: bLen});
+
+    svg_poly = new uSvgGraph({
+            divId: "tile_svg",
+            elementInfo:{width:500,height:500},
+            axesInfo:{showAxes:false,xmax:10, ymax:10}
+          });
+
+    svg_vec = new uSvgGraph({
+            divId: "tile_vec",
+            elementInfo:{width:500,height:500},
+            axesInfo:{showAxes:true,xmax:10, ymax:10}
+          });
+
+    hat_button.addEventListener("click", ()=>{
+      side_a.value = 1;
+      side_b.value = "sqrt3";
+    })
+    turtle_button.addEventListener("click", ()=>{
+      side_a.value = "sqrt3";
+      side_b.value = 1;
+    })
+    chiral_button.addEventListener("click", ()=>{
+      side_a.value = 1;
+      side_b.value = 1;
+    })
+
+    drawTile.addEventListener("click", function(){
+      let a = side_a.value;
+      let b = side_b.value;
+      console.log(a, b);
+      let aLen = isNumber(Number(a)) ? Number(a) : str2Num(a);
+      let bLen = isNumber(Number(b)) ? Number(b) : str2Num(b);
+
+      console.log("abLen", aLen, bLen)
+      mTile = new monotile({a: aLen, b: bLen}); // hat
+    
+      mTile.draw_poly(svg_poly);
+      mTile.draw_vectors(svg_vec);
+    })
+
+    
+    // drawTile.addEventListener("click", function(){
+    //   let lastPos = new uPoint();
+      
+    //   for (let vec of hat_vectors){
+    //     let v = vec.uVec(lastPos);
+    //     vectors.push(v);
+    //     svg_vec.addArrow(v);
+    //     lastPos = v.endpt;
+
+    //     poly.addPt(lastPos);
+    //   }
+    // })
+      
+
+
+  </script>
+
+</html>
