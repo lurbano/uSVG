@@ -20,21 +20,22 @@
 
             let x1 = start_vector.x;
             let y1 = start_vector.y;
+            let v_r = addVectors(start_vector, this); //resultant vector
+
             let w = svg.getAttribute("width");
             let h = svg.getAttribute("height");
             this.line = document.createElementNS("http://www.w3.org/2000/svg", "line");
 
             this.line.setAttribute("x1", x1);
             this.line.setAttribute("y1", h - y1);
-            this.line.setAttribute("x2", x1 + this.x);
-            this.line.setAttribute("y2", h - y1 - this.y);
+            this.line.setAttribute("x2", v_r.x);
+            this.line.setAttribute("y2", h - v_r.y);
 
             this.line.setAttribute("stroke", "black");
             svg.appendChild(this.line);
 
             //return resultant vector
-            let resultantVector = addVectors(start_vector, this);
-            return resultantVector;
+            return v_r;
         }
     }
 
