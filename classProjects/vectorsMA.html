@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        Hello
+
+    </body>
+
+<script>
+    class Vector_MA {
+        constructor(mag = 0, angle=0) {
+            this.mag = mag;
+            this.angle = angle;
+            this.angle_radians = angle * Math.PI / 180;
+            this.x = mag * Math.cos(this.angle_radians);
+            this.y = mag * Math.sin(this.angle_radians);
+        }
+
+
+        drawLine(svg, start_vector=new Vector_MA()){
+
+            let x1 = start_vector.x;
+            let y1 = start_vector.y;
+            let w = svg.getAttribute("width");
+            let h = svg.getAttribute("height");
+            this.line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+
+            this.line.setAttribute("x1", x1);
+            this.line.setAttribute("y1", h - y1);
+            this.line.setAttribute("x2", x1 + this.x);
+            this.line.setAttribute("y2", h - y1 - this.y);
+
+            this.line.setAttribute("stroke", "black");
+            svg.appendChild(this.line);
+
+            //return resultant vector
+            let resultantVector = addVectors(start_vector, this);
+            return resultantVector;
+        }
+    }
+
+    function addVectors(v1, v2){
+        let x = v1.x + v2.x;
+        let y = v1.y + v2.y;
+
+        let mag = Math.sqrt(x**2 + y**2);
+        let angle = Math.asin(y/mag);
+        angle = angle * 180 / Math.PI; //convert to degress
+
+        return new Vector_MA(mag, angle);
+    }
+
+    // set up svg
+    svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", "200");
+    svg.setAttribute("height", "200");
+    document.body.appendChild(svg);
+
+    // create vector
+    scale = 100;
+    AB = new Vector_MA(Math.sqrt(3)*scale, 60);
+
+    rVec = AB.drawLine(svg, new Vector_MA(100,0));
+
+    BC = new Vector_MA(1*scale, 150);
+    rVec = BC.drawLine(svg, rVec);
+
+    // rVec = addVectors(AB, BC); //resultant vector
+    // console.log(rVec);
+
+    CD = new Vector_MA(100, 300);
+    rVec = CD.drawLine(svg, rVec);
+</script>
+        
+
+
+</html>
