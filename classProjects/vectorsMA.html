@@ -15,28 +15,6 @@
             this.y = mag * Math.sin(this.angle_radians);
         }
 
-
-        drawLine(svg, start_vector=new Vector_MA()){
-
-            let x1 = start_vector.x;
-            let y1 = start_vector.y;
-            let v_r = addVectors(start_vector, this); //resultant vector
-
-            let w = svg.getAttribute("width");
-            let h = svg.getAttribute("height");
-            this.line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-
-            this.line.setAttribute("x1", x1);
-            this.line.setAttribute("y1", h - y1);
-            this.line.setAttribute("x2", v_r.x);
-            this.line.setAttribute("y2", h - v_r.y);
-
-            this.line.setAttribute("stroke", "black");
-            svg.appendChild(this.line);
-
-            //return resultant vector
-            return v_r;
-        }
     }
 
     function addVectors(v1, v2){
@@ -50,6 +28,28 @@
         return new Vector_MA(mag, angle);
     }
 
+    function drawLine(svg, v1, v2){
+        let x1 = v1.x;
+        let y1 = v1.y;
+
+        let x2 = v2.x;
+        let y2 = v2.y;
+
+        // get dimensions of svg
+        let w = svg.getAttribute("width");
+        let h = svg.getAttribute("height");
+
+        // do line
+        line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", x1);
+        line.setAttribute("y1", h - y1);
+        line.setAttribute("x2", x2);
+        line.setAttribute("y2", h - y2);
+
+        line.setAttribute("stroke", "black");
+        svg.appendChild(this.line);
+    }
+
     // set up svg
     svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("width", "200");
@@ -59,17 +59,23 @@
     // create vector
     scale = 100;
     AB = new Vector_MA(Math.sqrt(3)*scale, 60);
-
-    rVec = AB.drawLine(svg, new Vector_MA(100,0));
-
     BC = new Vector_MA(1*scale, 150);
-    rVec = BC.drawLine(svg, rVec);
-
-    // rVec = addVectors(AB, BC); //resultant vector
-    // console.log(rVec);
-
     CD = new Vector_MA(100, 300);
-    rVec = CD.drawLine(svg, rVec);
+
+    A = new Vector_MA(0,0);
+    B = addVectors(A, AB);
+    C = addVectors(B, BC);
+    D = addVectors(C, CD);
+
+    console.log(A, B, C, D)
+
+    drawLine(svg, A, B);
+    drawLine(svg, B, C);
+    // drawLine(svg, C, D);
+    
+
+
+
 </script>
         
 
