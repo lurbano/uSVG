@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>SVG Test</title>
+
+    <script type="text/javascript" src="./uSvg-0.4.1.js"></script>
+
+    <style media="screen">
+      svg {
+        border: 1px solid black;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Triangle class test</h1>
+
+      <br>
+
+        <script type="text/javascript" id="v0">
+          svg = new uSvgGraph({elementInfo:{width:1000,height:400}, axesInfo:{showAxes:false}});
+
+          let length = 20;
+          let dx = 0.5;
+          let n = 0;
+
+          svg.addLine(new uPoint(-length/2,0),new uPoint(length/2,0),{style: {"stroke-width": 1}});
+          for (let x = -length/2; x <= length/2; x+=dx) {
+            let pt1 = new uPoint(x,0);
+            let pt2 = new uPoint(x, 0.1);
+            let textPt = new uPoint(x, .25);
+            svg.addLine(pt1,pt2,{style: {"stroke-width": 1}});
+            svg.addText(n, textPt, {style:{"font-size": 7}})
+            n++;
+          }
+
+          
+         
+
+        </script>
+
+
+
+  </body>
+
+</html>
